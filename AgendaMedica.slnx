@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="AgendaMedica.UI/AgendaMedica.UI.csproj" />
+  <Project Path="../AgendaMedica.UI/AgendaMedica.UI.csproj" />
+  <Project Path="AgendaMedica.BL/AgendaMedica.BL.csproj" />
+  <Project Path="AgendaMedica.DAL/AgendaMedica.DAL.csproj" />
 </Solution>
