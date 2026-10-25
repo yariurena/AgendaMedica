@@ -33,6 +33,7 @@ namespace AgendaMedica.BL
             {
                 throw new System.ArgumentException("Ya existe un paciente con esa cédula.");
             }
+
             datos.InsertarPaciente(paciente);
         }
     }
