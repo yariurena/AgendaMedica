@@ -10,11 +10,12 @@ namespace AgendaMedica.DAL
         public List<string> ObtenerEspecialidades()
         {
             List<string> especialidades = new List<string>();
+
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
                 conexion.Open();
 
-                string consulta = "SELECT nombre FROM Especialidad ORDER BY nombre";
+                string consulta = @"SELECT nombre FROM Especialidad ORDER BY nombre";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 using (MySqlDataReader lector = comando.ExecuteReader())
@@ -25,8 +26,8 @@ namespace AgendaMedica.DAL
                     }
                 }
             }
+
             return especialidades;
         }
     }
 }
-
