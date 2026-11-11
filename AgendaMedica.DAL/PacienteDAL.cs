@@ -1,16 +1,16 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Data;
 using MySqlConnector;
 
 namespace AgendaMedica.DAL
 {
     public class PacienteDAL
     {
-        public DataTable ObtenerPacientes()
+        public List<AgendaMedica.Modelos.Paciente> ObtenerPacientes()
         {
-            DataTable tabla = new DataTable();
+            List<AgendaMedica.Modelos.Paciente> pacientes = new List<AgendaMedica.Modelos.Paciente>();
+
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
                 conexion.Open();
@@ -29,26 +29,42 @@ namespace AgendaMedica.DAL
                     ORDER BY apellidos, nombre";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
-                using (MySqlDataAdapter adaptador = new MySqlDataAdapter(comando))
+                using (MySqlDataReader lector = comando.ExecuteReader())
                 {
-                    adaptador.Fill(tabla);
+                    while (lector.Read())
+                    {
+                        AgendaMedica.Modelos.Paciente paciente = new AgendaMedica.Modelos.Paciente();
+
+                        paciente.IdPaciente = Convert.ToInt32(lector["id_paciente"]);
+                        paciente.Nombre = Convert.ToString(lector["nombre"]) ?? "";
+                        paciente.Apellidos = Convert.ToString(lector["apellidos"]) ?? "";
+                        paciente.Cedula = Convert.ToString(lector["cedula"]) ?? "";
+                        paciente.Direccion = Convert.ToString(lector["direccion"]) ?? "";
+                        paciente.Email = Convert.ToString(lector["email"]) ?? "";
+
+                        paciente.FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value? (DateTime?)null: Convert.ToDateTime(lector["FechaNacimiento"]);
+                        paciente.Telefono = Convert.ToString(lector["telefono"]) ?? "";
+
+                        pacientes.Add(paciente);
+                    }
                 }
             }
-            return tabla;
+            return pacientes;
         }
 
-        public void InsertarPaciente(Paciente paciente)
+        public void InsertarPaciente(AgendaMedica.Modelos.Paciente paciente)
         {
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
                 conexion.Open();
+
                 string consulta = @"
-                INSERT INTO Paciente
-                (nombre, apellidos, cedula, direccion, email,
-                FechaNacimiento, telefono)
-                VALUES
-                (@nombre, @apellidos, @cedula, @direccion, @email,
-                @fecha, @telefono)";
+                    INSERT INTO Paciente
+                    (nombre, apellidos, cedula, direccion, email,
+                    FechaNacimiento, telefono)
+                    VALUES
+                    (@nombre, @apellidos, @cedula, @direccion, @email,
+                    @fecha, @telefono)";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
@@ -58,8 +74,44 @@ namespace AgendaMedica.DAL
                     comando.Parameters.AddWithValue("@direccion", paciente.Direccion);
                     comando.Parameters.AddWithValue("@email", paciente.Email);
 
-                    comando.Parameters.AddWithValue("@fecha", paciente.FechaNacimiento.HasValue ? (object)paciente.FechaNacimiento.Value : DBNull.Value);
+                    comando.Parameters.AddWithValue("@fecha", paciente.FechaNacimiento.HasValue? (object)paciente.FechaNacimiento.Value: DBNull.Value);
                     comando.Parameters.AddWithValue("@telefono", paciente.Telefono);
+
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void ActualizarPaciente(AgendaMedica.Modelos.Paciente paciente)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = @"
+                    UPDATE Paciente
+                    SET
+                        nombre = @nombre,
+                        apellidos = @apellidos,
+                        cedula = @cedula,
+                        direccion = @direccion,
+                        email = @email,
+                        FechaNacimiento = @fecha,
+                        telefono = @telefono
+                    WHERE id_paciente = @idPaciente";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@nombre", paciente.Nombre);
+                    comando.Parameters.AddWithValue("@apellidos", paciente.Apellidos);
+                    comando.Parameters.AddWithValue("@cedula", paciente.Cedula);
+                    comando.Parameters.AddWithValue("@direccion", paciente.Direccion);
+                    comando.Parameters.AddWithValue("@email", paciente.Email);
+
+                    comando.Parameters.AddWithValue("@fecha", paciente.FechaNacimiento.HasValue? (object)paciente.FechaNacimiento.Value: DBNull.Value);
+                    comando.Parameters.AddWithValue("@telefono", paciente.Telefono);
+                    comando.Parameters.AddWithValue("@idPaciente", paciente.IdPaciente);
+
                     comando.ExecuteNonQuery();
                 }
             }
@@ -70,11 +122,37 @@ namespace AgendaMedica.DAL
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
                 conexion.Open();
+
                 string consulta = "SELECT COUNT(*) FROM Paciente WHERE cedula = @cedula";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
                     comando.Parameters.AddWithValue("@cedula", cedula);
+
+                    int cantidad = Convert.ToInt32(comando.ExecuteScalar());
+
+                    return cantidad > 0;
+                }
+            }
+        }
+
+        public bool ExisteCedula(string cedula, int idPacienteExcluir)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = @"
+                    SELECT COUNT(*)
+                    FROM Paciente
+                    WHERE cedula = @cedula
+                    AND id_paciente <> @idPaciente";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@cedula", cedula);
+                    comando.Parameters.AddWithValue("@idPaciente", idPacienteExcluir);
+
                     int cantidad = Convert.ToInt32(comando.ExecuteScalar());
 
                     return cantidad > 0;

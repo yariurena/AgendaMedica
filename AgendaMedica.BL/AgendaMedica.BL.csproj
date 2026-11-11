@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgendaMedica.DAL\AgendaMedica.DAL.csproj" />
+    <ProjectReference Include="..\AgendaMedica.Modelos\AgendaMedica.Modelos.csproj" />
   </ItemGroup>
 
 </Project>

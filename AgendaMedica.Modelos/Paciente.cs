@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AgendaMedica.DAL
+namespace AgendaMedica.Modelos
 {
     public class Paciente
     {

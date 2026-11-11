@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Windows.Forms;
 using AgendaMedica.BL;
-using AgendaMedica.DAL;
+using PacienteModelo = AgendaMedica.Modelos.Paciente;
+using EspecialidadModelo = AgendaMedica.Modelos.Especialidad;
 
 namespace AgendaMedica.UI
 {
@@ -12,6 +12,7 @@ namespace AgendaMedica.UI
         public FrmPrincipal()
         {
             InitializeComponent();
+
             this.Text = "Agenda Médica - Sistema de gestión";
             this.Width = 1100;
             this.Height = 650;
@@ -31,10 +32,12 @@ namespace AgendaMedica.UI
             tablaEspecialidades.Height = 220;
             tablaEspecialidades.ReadOnly = true;
             tablaEspecialidades.AllowUserToAddRows = false;
-            tablaEspecialidades.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            tablaEspecialidades.AutoSizeColumnsMode =
+                DataGridViewAutoSizeColumnsMode.Fill;
 
             this.Controls.Add(btnEspecialidades);
             this.Controls.Add(tablaEspecialidades);
+
             Button btnPacientes = new Button();
             btnPacientes.Text = "Ver pacientes";
             btnPacientes.Width = 180;
@@ -49,10 +52,12 @@ namespace AgendaMedica.UI
             tablaPacientes.Height = 220;
             tablaPacientes.ReadOnly = true;
             tablaPacientes.AllowUserToAddRows = false;
-            tablaPacientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            tablaPacientes.AutoSizeColumnsMode =
+                DataGridViewAutoSizeColumnsMode.Fill;
 
             this.Controls.Add(btnPacientes);
             this.Controls.Add(tablaPacientes);
+
             Button btnRegistrarPaciente = new Button();
             btnRegistrarPaciente.Text = "Registrar paciente";
             btnRegistrarPaciente.Width = 180;
@@ -61,6 +66,7 @@ namespace AgendaMedica.UI
             btnRegistrarPaciente.Top = 20;
 
             this.Controls.Add(btnRegistrarPaciente);
+
             Label lblNombre = new Label();
             lblNombre.Text = "Nombre:";
             lblNombre.Left = 650;
@@ -162,14 +168,23 @@ namespace AgendaMedica.UI
                 {
                     ServicioEspecialidad servicio = new ServicioEspecialidad();
 
-                    List<string> especialidades =
-                        servicio.ObtenerEspecialidades();
+                    List<EspecialidadModelo> especialidades = servicio.ObtenerEspecialidades();
 
-                    tablaEspecialidades.DataSource = especialidades.ConvertAll(nombre => new { Especialidad = nombre });
+                    tablaEspecialidades.DataSource = especialidades;
+
+                    if (tablaEspecialidades.Columns["IdEspecialidad"] != null)
+                    {
+                        tablaEspecialidades.Columns["IdEspecialidad"].Visible = false;
+                    }
+
+                    if (tablaEspecialidades.Columns["Nombre"] != null)
+                    {
+                        tablaEspecialidades.Columns["Nombre"].HeaderText = "Especialidad";
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No se pudieron cargar las especialidades: " + ex.Message);
+                    MessageBox.Show( "No se pudieron cargar las especialidades: " + ex.Message);
                 }
             };
 
@@ -179,15 +194,13 @@ namespace AgendaMedica.UI
                 {
                     ServicioPaciente servicio = new ServicioPaciente();
 
-                    DataTable pacientes = servicio.ObtenerPacientes();
+                    List<PacienteModelo> pacientes = servicio.ObtenerPacientes();
 
                     tablaPacientes.DataSource = pacientes;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(
-                        "No se pudieron cargar los pacientes: " + ex.Message
-                    );
+                    MessageBox.Show("No se pudieron cargar los pacientes: " + ex.Message);
                 }
             };
 
@@ -197,7 +210,7 @@ namespace AgendaMedica.UI
                 {
                     ServicioPaciente servicio = new ServicioPaciente();
 
-                    Paciente paciente = new Paciente
+                    PacienteModelo paciente = new PacienteModelo
                     {
                         Nombre = txtNombre.Text.Trim(),
                         Apellidos = txtApellidos.Text.Trim(),
@@ -205,10 +218,14 @@ namespace AgendaMedica.UI
                         Direccion = txtDireccion.Text.Trim(),
                         Email = txtEmail.Text.Trim(),
                         Telefono = txtTelefono.Text.Trim(),
-                        FechaNacimiento = dtpFechaNacimiento.Checked? dtpFechaNacimiento.Value.Date: (DateTime?)null
+
+                        FechaNacimiento = dtpFechaNacimiento.Checked ? dtpFechaNacimiento.Value.Date: (DateTime?)null
                     };
+
                     servicio.RegistrarPaciente(paciente);
+
                     MessageBox.Show("Paciente registrado correctamente.");
+
                     tablaPacientes.DataSource = servicio.ObtenerPacientes();
 
                     txtNombre.Clear();
@@ -217,11 +234,12 @@ namespace AgendaMedica.UI
                     txtDireccion.Clear();
                     txtEmail.Clear();
                     txtTelefono.Clear();
+
                     dtpFechaNacimiento.Checked = false;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No se pudo registrar el paciente: " + ex.Message);
+                    MessageBox.Show("No se pudo registrar el paciente: " +ex.Message);
                 }
             };
         }

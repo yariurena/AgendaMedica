@@ -9,7 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AgendaMedica\AgendaMedica.BL\AgendaMedica.BL.csproj" />
+	  <ProjectReference Include="..\AgendaMedica.BL\AgendaMedica.BL.csproj" />
+	  <ProjectReference Include="..\AgendaMedica.Modelos\AgendaMedica.Modelos.csproj" />
   </ItemGroup>
 
 </Project>

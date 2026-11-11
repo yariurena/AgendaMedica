@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using MySqlConnector;
+using MedicoModelo = AgendaMedica.Modelos.Medico;
 
 namespace AgendaMedica.DAL
 {
     public class MedicoDAL
     {
-        public DataTable ObtenerMedicos()
+        public List<MedicoModelo> ObtenerMedicos()
         {
-            DataTable tabla = new DataTable();
+            List<MedicoModelo> medicos = new List<MedicoModelo>();
 
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
@@ -20,7 +20,8 @@ namespace AgendaMedica.DAL
                         m.id_medico,
                         m.Nombre,
                         m.Apellidos,
-                        e.Nombre AS Especialidad,
+                        m.id_especialidad,
+                        e.Nombre AS NombreEspecialidad,
                         m.Telefono,
                         m.Email
                     FROM Medico m
@@ -29,16 +30,28 @@ namespace AgendaMedica.DAL
                     ORDER BY m.Apellidos, m.Nombre";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
-                using (MySqlDataAdapter adaptador = new MySqlDataAdapter(comando))
+                using (MySqlDataReader lector = comando.ExecuteReader())
                 {
-                    adaptador.Fill(tabla);
+                    while (lector.Read())
+                    {
+                        MedicoModelo medico = new MedicoModelo();
+
+                        medico.IdMedico = Convert.ToInt32(lector["id_medico"]);
+                        medico.Nombre = Convert.ToString(lector["Nombre"]) ?? "";
+                        medico.Apellidos = Convert.ToString(lector["Apellidos"]) ?? "";
+                        medico.IdEspecialidad = Convert.ToInt32(lector["id_especialidad"]);
+                        medico.NombreEspecialidad = Convert.ToString(lector["NombreEspecialidad"]) ?? "";
+                        medico.Telefono = lector["Telefono"] == DBNull.Value? "": Convert.ToString(lector["Telefono"]) ?? "";
+                        medico.Email = lector["Email"] == DBNull.Value? "": Convert.ToString(lector["Email"]) ?? "";
+
+                        medicos.Add(medico);
+                    }
                 }
             }
-
-            return tabla;
+            return medicos;
         }
 
-        public void InsertarMedico(Medico medico)
+        public void InsertarMedico(MedicoModelo medico)
         {
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
@@ -53,12 +66,13 @@ namespace AgendaMedica.DAL
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", medico.Nombre);
+
                     comando.Parameters.AddWithValue("@apellidos", medico.Apellidos);
+
                     comando.Parameters.AddWithValue("@idEspecialidad", medico.IdEspecialidad);
-                    comando.Parameters.AddWithValue("@telefono",
-                        string.IsNullOrWhiteSpace(medico.Telefono)
-                            ? (object)DBNull.Value
-                            : medico.Telefono);
+
+                    comando.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(medico.Telefono)? (object)DBNull.Value: medico.Telefono);
+
                     comando.Parameters.AddWithValue("@email", medico.Email);
 
                     comando.ExecuteNonQuery();
