@@ -1,8 +1,8 @@
+
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using AgendaMedica.BL;
-using PacienteModelo = AgendaMedica.Modelos.Paciente;
 using EspecialidadModelo = AgendaMedica.Modelos.Especialidad;
 
 namespace AgendaMedica.UI
@@ -18,6 +18,36 @@ namespace AgendaMedica.UI
             this.Height = 650;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            Button btnAbrirPacientes = new Button();
+            btnAbrirPacientes.Text = "Gestión de pacientes";
+            btnAbrirPacientes.Width = 180;
+            btnAbrirPacientes.Height = 35;
+            btnAbrirPacientes.Left = 220;
+            btnAbrirPacientes.Top = 20;
+
+            this.Controls.Add(btnAbrirPacientes);
+
+            btnAbrirPacientes.Click += (sender, e) =>
+            {
+                FrmPacientes ventanaPacientes = new FrmPacientes();
+                ventanaPacientes.ShowDialog();
+            };
+
+            Button btnAbrirMedicos = new Button();
+            btnAbrirMedicos.Text = "Gestión de médicos";
+            btnAbrirMedicos.Width = 180;
+            btnAbrirMedicos.Height = 35;
+            btnAbrirMedicos.Left = 420;
+            btnAbrirMedicos.Top = 20;
+
+            this.Controls.Add(btnAbrirMedicos);
+
+            btnAbrirMedicos.Click += (sender, e) =>
+            {
+                FrmMedicos ventanaMedicos = new FrmMedicos();
+                ventanaMedicos.ShowDialog();
+            };
+
             Button btnEspecialidades = new Button();
             btnEspecialidades.Text = "Ver especialidades";
             btnEspecialidades.Width = 180;
@@ -26,150 +56,75 @@ namespace AgendaMedica.UI
             btnEspecialidades.Top = 20;
 
             DataGridView tablaEspecialidades = new DataGridView();
+
             tablaEspecialidades.Left = 20;
             tablaEspecialidades.Top = 70;
             tablaEspecialidades.Width = 400;
             tablaEspecialidades.Height = 220;
             tablaEspecialidades.ReadOnly = true;
             tablaEspecialidades.AllowUserToAddRows = false;
-            tablaEspecialidades.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
+            tablaEspecialidades.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            tablaEspecialidades.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            tablaEspecialidades.MultiSelect = false;
 
             this.Controls.Add(btnEspecialidades);
             this.Controls.Add(tablaEspecialidades);
 
-            Button btnPacientes = new Button();
-            btnPacientes.Text = "Ver pacientes";
-            btnPacientes.Width = 180;
-            btnPacientes.Height = 35;
-            btnPacientes.Left = 220;
-            btnPacientes.Top = 20;
+            Label lblNombreEspecialidad = new Label();
+            lblNombreEspecialidad.Text ="Nombre de la especialidad:";
 
-            DataGridView tablaPacientes = new DataGridView();
-            tablaPacientes.Left = 20;
-            tablaPacientes.Top = 310;
-            tablaPacientes.Width = 600;
-            tablaPacientes.Height = 220;
-            tablaPacientes.ReadOnly = true;
-            tablaPacientes.AllowUserToAddRows = false;
-            tablaPacientes.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
+            lblNombreEspecialidad.Left = 440;
+            lblNombreEspecialidad.Top = 70;
+            lblNombreEspecialidad.Width = 200;
 
-            this.Controls.Add(btnPacientes);
-            this.Controls.Add(tablaPacientes);
+            TextBox txtNombreEspecialidad = new TextBox();
+            txtNombreEspecialidad.Left = 440;
+            txtNombreEspecialidad.Top = 95;
+            txtNombreEspecialidad.Width = 170;
 
-            Button btnRegistrarPaciente = new Button();
-            btnRegistrarPaciente.Text = "Registrar paciente";
-            btnRegistrarPaciente.Width = 180;
-            btnRegistrarPaciente.Height = 35;
-            btnRegistrarPaciente.Left = 420;
-            btnRegistrarPaciente.Top = 20;
+            this.Controls.Add(lblNombreEspecialidad);
+            this.Controls.Add(txtNombreEspecialidad);
 
-            this.Controls.Add(btnRegistrarPaciente);
+            Button btnRegistrarEspecialidad = new Button();
+            btnRegistrarEspecialidad.Text = "Registrar especialidad";
 
-            Label lblNombre = new Label();
-            lblNombre.Text = "Nombre:";
-            lblNombre.Left = 650;
-            lblNombre.Top = 70;
-            lblNombre.Width = 120;
+            btnRegistrarEspecialidad.Width = 180;
+            btnRegistrarEspecialidad.Height = 35;
+            btnRegistrarEspecialidad.Left = 440;
+            btnRegistrarEspecialidad.Top = 135;
 
-            TextBox txtNombre = new TextBox();
-            txtNombre.Left = 650;
-            txtNombre.Top = 90;
-            txtNombre.Width = 220;
+            this.Controls.Add(btnRegistrarEspecialidad);
 
-            Label lblApellidos = new Label();
-            lblApellidos.Text = "Apellidos:";
-            lblApellidos.Left = 650;
-            lblApellidos.Top = 120;
-            lblApellidos.Width = 120;
+            Button btnActualizarEspecialidad = new Button();
+            btnActualizarEspecialidad.Text = "Actualizar especialidad";
 
-            TextBox txtApellidos = new TextBox();
-            txtApellidos.Left = 650;
-            txtApellidos.Top = 140;
-            txtApellidos.Width = 220;
+            btnActualizarEspecialidad.Width = 180;
+            btnActualizarEspecialidad.Height = 35;
+            btnActualizarEspecialidad.Left = 440;
+            btnActualizarEspecialidad.Top = 180;
+            btnActualizarEspecialidad.Enabled = false;
 
-            Label lblCedula = new Label();
-            lblCedula.Text = "Cédula:";
-            lblCedula.Left = 650;
-            lblCedula.Top = 170;
-            lblCedula.Width = 120;
+            this.Controls.Add(btnActualizarEspecialidad);
 
-            TextBox txtCedula = new TextBox();
-            txtCedula.Left = 650;
-            txtCedula.Top = 190;
-            txtCedula.Width = 220;
+            int idEspecialidadSeleccionada = 0;
 
-            Label lblDireccion = new Label();
-            lblDireccion.Text = "Dirección:";
-            lblDireccion.Left = 650;
-            lblDireccion.Top = 220;
-            lblDireccion.Width = 120;
+            ServicioEspecialidad servicio = new ServicioEspecialidad();
 
-            TextBox txtDireccion = new TextBox();
-            txtDireccion.Left = 650;
-            txtDireccion.Top = 240;
-            txtDireccion.Width = 220;
-
-            Label lblEmail = new Label();
-            lblEmail.Text = "Correo electrónico:";
-            lblEmail.Left = 650;
-            lblEmail.Top = 270;
-            lblEmail.Width = 150;
-
-            TextBox txtEmail = new TextBox();
-            txtEmail.Left = 650;
-            txtEmail.Top = 290;
-            txtEmail.Width = 220;
-
-            Label lblFecha = new Label();
-            lblFecha.Text = "Fecha de nacimiento:";
-            lblFecha.Left = 650;
-            lblFecha.Top = 320;
-            lblFecha.Width = 150;
-
-            DateTimePicker dtpFechaNacimiento = new DateTimePicker();
-            dtpFechaNacimiento.Left = 650;
-            dtpFechaNacimiento.Top = 340;
-            dtpFechaNacimiento.Width = 220;
-            dtpFechaNacimiento.Format = DateTimePickerFormat.Short;
-            dtpFechaNacimiento.ShowCheckBox = true;
-            dtpFechaNacimiento.Checked = false;
-
-            Label lblTelefono = new Label();
-            lblTelefono.Text = "Teléfono:";
-            lblTelefono.Left = 650;
-            lblTelefono.Top = 370;
-            lblTelefono.Width = 120;
-
-            TextBox txtTelefono = new TextBox();
-            txtTelefono.Left = 650;
-            txtTelefono.Top = 390;
-            txtTelefono.Width = 220;
-
-            this.Controls.Add(lblNombre);
-            this.Controls.Add(txtNombre);
-            this.Controls.Add(lblApellidos);
-            this.Controls.Add(txtApellidos);
-            this.Controls.Add(lblCedula);
-            this.Controls.Add(txtCedula);
-            this.Controls.Add(lblDireccion);
-            this.Controls.Add(txtDireccion);
-            this.Controls.Add(lblEmail);
-            this.Controls.Add(txtEmail);
-            this.Controls.Add(lblFecha);
-            this.Controls.Add(dtpFechaNacimiento);
-            this.Controls.Add(lblTelefono);
-            this.Controls.Add(txtTelefono);
+            void LimpiarEspecialidad()
+            {
+                txtNombreEspecialidad.Clear();
+                idEspecialidadSeleccionada = 0;
+                btnActualizarEspecialidad.Enabled = false;
+                tablaEspecialidades.ClearSelection();
+            }
 
             btnEspecialidades.Click += (sender, e) =>
             {
                 try
                 {
-                    ServicioEspecialidad servicio = new ServicioEspecialidad();
-
                     List<EspecialidadModelo> especialidades = servicio.ObtenerEspecialidades();
 
+                    tablaEspecialidades.DataSource = null;
                     tablaEspecialidades.DataSource = especialidades;
 
                     if (tablaEspecialidades.Columns["IdEspecialidad"] != null)
@@ -181,65 +136,79 @@ namespace AgendaMedica.UI
                     {
                         tablaEspecialidades.Columns["Nombre"].HeaderText = "Especialidad";
                     }
+                    LimpiarEspecialidad();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show( "No se pudieron cargar las especialidades: " + ex.Message);
+                    MessageBox.Show("No se pudieron cargar las especialidades: " + ex.Message);
                 }
             };
 
-            btnPacientes.Click += (sender, e) =>
+            tablaEspecialidades.CellClick += (sender, e) =>
+            {
+                if (e.RowIndex < 0)
+                    return;
+
+                EspecialidadModelo especialidad = tablaEspecialidades.Rows[e.RowIndex].DataBoundItem as EspecialidadModelo;
+
+                if (especialidad == null)
+                    return;
+
+                idEspecialidadSeleccionada = especialidad.IdEspecialidad;
+                txtNombreEspecialidad.Text = especialidad.Nombre;
+                btnActualizarEspecialidad.Enabled = true;
+            };
+
+            btnRegistrarEspecialidad.Click += (sender, e) =>
             {
                 try
                 {
-                    ServicioPaciente servicio = new ServicioPaciente();
+                    EspecialidadModelo especialidad = new EspecialidadModelo
+                        {
+                            Nombre = txtNombreEspecialidad.Text.Trim()
+                        };
 
-                    List<PacienteModelo> pacientes = servicio.ObtenerPacientes();
+                    servicio.RegistrarEspecialidad(especialidad);
+                    MessageBox.Show("Especialidad registrada correctamente.");
 
-                    tablaPacientes.DataSource = pacientes;
+                    tablaEspecialidades.DataSource = null;
+                    tablaEspecialidades.DataSource = servicio.ObtenerEspecialidades();
+
+                    LimpiarEspecialidad();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No se pudieron cargar los pacientes: " + ex.Message);
+                    MessageBox.Show("No se pudo registrar la especialidad: " + ex.Message);
                 }
             };
 
-            btnRegistrarPaciente.Click += (sender, e) =>
+            btnActualizarEspecialidad.Click += (sender, e) =>
             {
                 try
                 {
-                    ServicioPaciente servicio = new ServicioPaciente();
-
-                    PacienteModelo paciente = new PacienteModelo
+                    if (idEspecialidadSeleccionada <= 0)
                     {
-                        Nombre = txtNombre.Text.Trim(),
-                        Apellidos = txtApellidos.Text.Trim(),
-                        Cedula = txtCedula.Text.Trim(),
-                        Direccion = txtDireccion.Text.Trim(),
-                        Email = txtEmail.Text.Trim(),
-                        Telefono = txtTelefono.Text.Trim(),
+                        MessageBox.Show("Primero debe seleccionar una especialidad.");
+                        return;
+                    }
 
-                        FechaNacimiento = dtpFechaNacimiento.Checked ? dtpFechaNacimiento.Value.Date: (DateTime?)null
-                    };
+                    EspecialidadModelo especialidad = new EspecialidadModelo
+                        {
+                            IdEspecialidad = idEspecialidadSeleccionada,
+                            Nombre = txtNombreEspecialidad.Text.Trim()
+                        };
+                    
+                    servicio.ActualizarEspecialidad(especialidad);
+                    MessageBox.Show("Especialidad actualizada correctamente.");
 
-                    servicio.RegistrarPaciente(paciente);
+                    tablaEspecialidades.DataSource = null;
+                    tablaEspecialidades.DataSource = servicio.ObtenerEspecialidades();
 
-                    MessageBox.Show("Paciente registrado correctamente.");
-
-                    tablaPacientes.DataSource = servicio.ObtenerPacientes();
-
-                    txtNombre.Clear();
-                    txtApellidos.Clear();
-                    txtCedula.Clear();
-                    txtDireccion.Clear();
-                    txtEmail.Clear();
-                    txtTelefono.Clear();
-
-                    dtpFechaNacimiento.Checked = false;
+                    LimpiarEspecialidad();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No se pudo registrar el paciente: " +ex.Message);
+                    MessageBox.Show("No se pudo actualizar la especialidad: " + ex.Message);
                 }
             };
         }

@@ -41,9 +41,9 @@ namespace AgendaMedica.DAL
                         medico.Apellidos = Convert.ToString(lector["Apellidos"]) ?? "";
                         medico.IdEspecialidad = Convert.ToInt32(lector["id_especialidad"]);
                         medico.NombreEspecialidad = Convert.ToString(lector["NombreEspecialidad"]) ?? "";
+
                         medico.Telefono = lector["Telefono"] == DBNull.Value? "": Convert.ToString(lector["Telefono"]) ?? "";
                         medico.Email = lector["Email"] == DBNull.Value? "": Convert.ToString(lector["Email"]) ?? "";
-
                         medicos.Add(medico);
                     }
                 }
@@ -57,23 +57,44 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"
-                    INSERT INTO Medico
-                    (Nombre, Apellidos, id_especialidad, Telefono, Email)
-                    VALUES
-                    (@nombre, @apellidos, @idEspecialidad, @telefono, @email)";
+                string consulta = @"INSERT INTO Medico (Nombre, Apellidos, id_especialidad, Telefono, Email) VALUES (@nombre, @apellidos, @idEspecialidad, @telefono, @email)";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", medico.Nombre);
-
                     comando.Parameters.AddWithValue("@apellidos", medico.Apellidos);
-
                     comando.Parameters.AddWithValue("@idEspecialidad", medico.IdEspecialidad);
-
                     comando.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(medico.Telefono)? (object)DBNull.Value: medico.Telefono);
-
                     comando.Parameters.AddWithValue("@email", medico.Email);
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void ActualizarMedico(MedicoModelo medico)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = @"
+                    UPDATE Medico
+                    SET
+                        Nombre = @nombre,
+                        Apellidos = @apellidos,
+                        id_especialidad = @idEspecialidad,
+                        Telefono = @telefono,
+                        Email = @email
+                    WHERE id_medico = @idMedico";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@nombre", medico.Nombre);
+                    comando.Parameters.AddWithValue("@apellidos", medico.Apellidos);
+                    comando.Parameters.AddWithValue("@idEspecialidad", medico.IdEspecialidad);
+                    comando.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(medico.Telefono)? (object)DBNull.Value: medico.Telefono);
+                    comando.Parameters.AddWithValue("@email", medico.Email);
+                    comando.Parameters.AddWithValue("@idMedico", medico.IdMedico);
 
                     comando.ExecuteNonQuery();
                 }
