@@ -41,12 +41,20 @@ namespace AgendaMedica.BL
             datos.ActualizarPaciente(paciente);
         }
 
+
         private void ValidarPaciente(PacienteModelo paciente)
         {
             if (paciente == null)
             {
                 throw new ArgumentNullException(nameof(paciente));
             }
+
+            paciente.Nombre = paciente.Nombre?.Trim() ?? "";
+            paciente.Apellidos = paciente.Apellidos?.Trim() ?? "";
+            paciente.Cedula = paciente.Cedula?.Trim() ?? "";
+            paciente.Direccion = paciente.Direccion?.Trim() ?? "";
+            paciente.Email = paciente.Email?.Trim() ?? "";
+            paciente.Telefono = paciente.Telefono?.Trim() ?? "";
 
             if (string.IsNullOrWhiteSpace(paciente.Nombre))
             {
@@ -74,7 +82,7 @@ namespace AgendaMedica.BL
                 {
                     MailAddress correo = new MailAddress(paciente.Email);
 
-                    if (correo.Address != paciente.Email.Trim())
+                    if (correo.Address != paciente.Email)
                     {
                         throw new ArgumentException("El correo electrónico no tiene un formato válido.");
                     }
@@ -91,7 +99,7 @@ namespace AgendaMedica.BL
 
                 if (!Regex.IsMatch(telefono, @"^(?:\+506)?\d{8}$"))
                 {
-                    throw new ArgumentException("El teléfono debe contener 8 dígitos. " + "También puede incluir el código +506.");
+                    throw new ArgumentException("El teléfono debe contener 8 dígitos. También puede incluir el código +506.");
                 }
             }
 

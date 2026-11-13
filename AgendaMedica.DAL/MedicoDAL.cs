@@ -100,5 +100,25 @@ namespace AgendaMedica.DAL
                 }
             }
         }
+        public bool ExisteEspecialidad(int idEspecialidad)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+                string consulta = @"
+                    SELECT COUNT(*)
+                    FROM Especialidad
+                    WHERE id_especialidad = @idEspecialidad";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@idEspecialidad", idEspecialidad);
+                    int cantidad = Convert.ToInt32(comando.ExecuteScalar());
+
+                    return cantidad > 0;
+                }
+            }
+        }
     }
 }
+

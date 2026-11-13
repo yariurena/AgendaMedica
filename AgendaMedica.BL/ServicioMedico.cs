@@ -32,12 +32,19 @@ namespace AgendaMedica.BL
             datos.ActualizarMedico(medico);
         }
 
+
         private void ValidarMedico(MedicoModelo medico)
         {
             if (medico == null)
             {
-                throw new ArgumentNullException(nameof(medico), "No se proporcionaron los datos del médico.");
+                throw new ArgumentNullException(nameof(medico),
+                    "No se proporcionaron los datos del médico.");
             }
+
+            medico.Nombre = medico.Nombre?.Trim() ?? "";
+            medico.Apellidos = medico.Apellidos?.Trim() ?? "";
+            medico.Email = medico.Email?.Trim() ?? "";
+            medico.Telefono = medico.Telefono?.Trim() ?? "";
 
             if (string.IsNullOrWhiteSpace(medico.Nombre))
             {
@@ -54,6 +61,11 @@ namespace AgendaMedica.BL
                 throw new ArgumentException("Debe seleccionar una especialidad.");
             }
 
+            if (!datos.ExisteEspecialidad(medico.IdEspecialidad))
+            {
+                throw new ArgumentException("La especialidad seleccionada no existe.");
+            }
+
             if (string.IsNullOrWhiteSpace(medico.Email))
             {
                 throw new ArgumentException("El correo electrónico es obligatorio.");
@@ -61,9 +73,9 @@ namespace AgendaMedica.BL
 
             try
             {
-                MailAddress correo = new MailAddress(medico.Email.Trim());
+                MailAddress correo = new MailAddress(medico.Email);
 
-                if (correo.Address != medico.Email.Trim())
+                if (correo.Address != medico.Email)
                 {
                     throw new ArgumentException("El correo electrónico no tiene un formato válido.");
                 }
@@ -75,18 +87,13 @@ namespace AgendaMedica.BL
 
             if (!string.IsNullOrWhiteSpace(medico.Telefono))
             {
-                string telefono = Regex.Replace(medico.Telefono, @"[\s\-\(\)]","");
+                string telefono = Regex.Replace(medico.Telefono, @"[\s\-\(\)]", "");
 
                 if (!Regex.IsMatch(telefono, @"^(?:\+506)?\d{8}$"))
                 {
                     throw new ArgumentException("El teléfono debe contener 8 dígitos. También puede incluir el código +506.");
                 }
             }
-
-            medico.Nombre = medico.Nombre.Trim();
-            medico.Apellidos = medico.Apellidos.Trim();
-            medico.Email = medico.Email.Trim();
-            medico.Telefono = medico.Telefono?.Trim() ?? "";
         }
     }
 }
