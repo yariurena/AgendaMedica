@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -29,6 +30,7 @@ namespace AgendaMedica.BL
         public void ActualizarPaciente(PacienteModelo paciente)
         {
             ValidarPaciente(paciente);
+
             if (paciente.IdPaciente <= 0)
             {
                 throw new ArgumentException("El paciente seleccionado no es válido.");
@@ -41,7 +43,6 @@ namespace AgendaMedica.BL
             datos.ActualizarPaciente(paciente);
         }
 
-
         private void ValidarPaciente(PacienteModelo paciente)
         {
             if (paciente == null)
@@ -50,7 +51,8 @@ namespace AgendaMedica.BL
             }
 
             paciente.Nombre = paciente.Nombre?.Trim() ?? "";
-            paciente.Apellidos = paciente.Apellidos?.Trim() ?? "";
+            paciente.PrimerApellido = paciente.PrimerApellido?.Trim() ?? "";
+            paciente.SegundoApellido = paciente.SegundoApellido?.Trim() ?? "";
             paciente.Cedula = paciente.Cedula?.Trim() ?? "";
             paciente.Direccion = paciente.Direccion?.Trim() ?? "";
             paciente.Email = paciente.Email?.Trim() ?? "";
@@ -61,9 +63,14 @@ namespace AgendaMedica.BL
                 throw new ArgumentException("El nombre es obligatorio.");
             }
 
-            if (string.IsNullOrWhiteSpace(paciente.Apellidos))
+            if (string.IsNullOrWhiteSpace(paciente.PrimerApellido))
             {
-                throw new ArgumentException("Los apellidos son obligatorios.");
+                throw new ArgumentException("El primer apellido es obligatorio.");
+            }
+
+            if (string.IsNullOrWhiteSpace(paciente.SegundoApellido))
+            {
+                throw new ArgumentException("El segundo apellido es obligatorio.");
             }
 
             if (string.IsNullOrWhiteSpace(paciente.Cedula))
@@ -95,7 +102,7 @@ namespace AgendaMedica.BL
 
             if (!string.IsNullOrWhiteSpace(paciente.Telefono))
             {
-                string telefono = Regex.Replace(paciente.Telefono, @"[\s\-\(\)]", "");
+                string telefono = Regex.Replace(paciente.Telefono, @"[\s\-()]", "");
 
                 if (!Regex.IsMatch(telefono, @"^(?:\+506)?\d{8}$"))
                 {

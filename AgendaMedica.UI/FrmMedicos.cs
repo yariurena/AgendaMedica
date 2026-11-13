@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using AgendaMedica.BL;
@@ -15,7 +16,7 @@ namespace AgendaMedica.UI
 
             this.Text = "Agenda Médica - Gestión de médicos";
             this.Width = 1000;
-            this.Height = 650;
+            this.Height = 720;
             this.StartPosition = FormStartPosition.CenterScreen;
 
             Label lblTitulo = new Label();
@@ -38,7 +39,7 @@ namespace AgendaMedica.UI
             tablaMedicos.Left = 20;
             tablaMedicos.Top = 115;
             tablaMedicos.Width = 550;
-            tablaMedicos.Height = 420;
+            tablaMedicos.Height = 500;
             tablaMedicos.ReadOnly = true;
             tablaMedicos.AllowUserToAddRows = false;
             tablaMedicos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -56,62 +57,73 @@ namespace AgendaMedica.UI
             txtNombre.Top = 85;
             txtNombre.Width = 280;
 
-            Label lblApellidos = new Label();
-            lblApellidos.Text = "Apellidos:";
-            lblApellidos.Left = 610;
-            lblApellidos.Top = 125;
-            lblApellidos.Width = 250;
+            Label lblPrimerApellido = new Label();
+            lblPrimerApellido.Text = "Primer apellido:";
+            lblPrimerApellido.Left = 610;
+            lblPrimerApellido.Top = 125;
+            lblPrimerApellido.Width = 250;
 
-            TextBox txtApellidos = new TextBox();
-            txtApellidos.Left = 610;
-            txtApellidos.Top = 150;
-            txtApellidos.Width = 280;
+            TextBox txtPrimerApellido = new TextBox();
+            txtPrimerApellido.Left = 610;
+            txtPrimerApellido.Top = 150;
+            txtPrimerApellido.Width = 280;
+
+            Label lblSegundoApellido = new Label();
+            lblSegundoApellido.Text = "Segundo apellido:";
+            lblSegundoApellido.Left = 610;
+            lblSegundoApellido.Top = 190;
+            lblSegundoApellido.Width = 250;
+
+            TextBox txtSegundoApellido = new TextBox();
+            txtSegundoApellido.Left = 610;
+            txtSegundoApellido.Top = 215;
+            txtSegundoApellido.Width = 280;
 
             Label lblEspecialidad = new Label();
             lblEspecialidad.Text = "Especialidad:";
             lblEspecialidad.Left = 610;
-            lblEspecialidad.Top = 190;
+            lblEspecialidad.Top = 255;
             lblEspecialidad.Width = 250;
 
             ComboBox cmbEspecialidad = new ComboBox();
             cmbEspecialidad.Left = 610;
-            cmbEspecialidad.Top = 215;
+            cmbEspecialidad.Top = 280;
             cmbEspecialidad.Width = 280;
             cmbEspecialidad.DropDownStyle = ComboBoxStyle.DropDownList;
 
             Label lblTelefono = new Label();
             lblTelefono.Text = "Teléfono:";
             lblTelefono.Left = 610;
-            lblTelefono.Top = 255;
+            lblTelefono.Top = 320;
             lblTelefono.Width = 250;
 
             TextBox txtTelefono = new TextBox();
             txtTelefono.Left = 610;
-            txtTelefono.Top = 280;
+            txtTelefono.Top = 345;
             txtTelefono.Width = 280;
 
             Label lblEmail = new Label();
             lblEmail.Text = "Correo electrónico:";
             lblEmail.Left = 610;
-            lblEmail.Top = 320;
+            lblEmail.Top = 385;
             lblEmail.Width = 250;
 
             TextBox txtEmail = new TextBox();
             txtEmail.Left = 610;
-            txtEmail.Top = 345;
+            txtEmail.Top = 410;
             txtEmail.Width = 280;
 
             Button btnRegistrar = new Button();
             btnRegistrar.Text = "Registrar médico";
             btnRegistrar.Left = 610;
-            btnRegistrar.Top = 400;
+            btnRegistrar.Top = 465;
             btnRegistrar.Width = 135;
             btnRegistrar.Height = 40;
 
             Button btnActualizar = new Button();
             btnActualizar.Text = "Actualizar médico";
             btnActualizar.Left = 755;
-            btnActualizar.Top = 400;
+            btnActualizar.Top = 465;
             btnActualizar.Width = 145;
             btnActualizar.Height = 40;
             btnActualizar.Enabled = false;
@@ -119,7 +131,7 @@ namespace AgendaMedica.UI
             Button btnLimpiar = new Button();
             btnLimpiar.Text = "Limpiar campos";
             btnLimpiar.Left = 610;
-            btnLimpiar.Top = 455;
+            btnLimpiar.Top = 520;
             btnLimpiar.Width = 135;
             btnLimpiar.Height = 35;
 
@@ -129,12 +141,19 @@ namespace AgendaMedica.UI
 
             this.Controls.Add(lblNombre);
             this.Controls.Add(txtNombre);
-            this.Controls.Add(lblApellidos);
-            this.Controls.Add(txtApellidos);
+
+            this.Controls.Add(lblPrimerApellido);
+            this.Controls.Add(txtPrimerApellido);
+
+            this.Controls.Add(lblSegundoApellido);
+            this.Controls.Add(txtSegundoApellido);
+
             this.Controls.Add(lblEspecialidad);
             this.Controls.Add(cmbEspecialidad);
+
             this.Controls.Add(lblTelefono);
             this.Controls.Add(txtTelefono);
+
             this.Controls.Add(lblEmail);
             this.Controls.Add(txtEmail);
 
@@ -174,11 +193,17 @@ namespace AgendaMedica.UI
                 if (tablaMedicos.Columns["Nombre"] != null)
                     tablaMedicos.Columns["Nombre"].HeaderText = "Nombre";
 
-                if (tablaMedicos.Columns["Apellidos"] != null)
-                    tablaMedicos.Columns["Apellidos"].HeaderText = "Apellidos";
+                if (tablaMedicos.Columns["PrimerApellido"] != null)
+                    tablaMedicos.Columns["PrimerApellido"].HeaderText =
+                        "Primer apellido";
+
+                if (tablaMedicos.Columns["SegundoApellido"] != null)
+                    tablaMedicos.Columns["SegundoApellido"].HeaderText =
+                        "Segundo apellido";
 
                 if (tablaMedicos.Columns["NombreEspecialidad"] != null)
-                    tablaMedicos.Columns["NombreEspecialidad"].HeaderText = "Especialidad";
+                    tablaMedicos.Columns["NombreEspecialidad"].HeaderText =
+                        "Especialidad";
 
                 if (tablaMedicos.Columns["Telefono"] != null)
                     tablaMedicos.Columns["Telefono"].HeaderText = "Teléfono";
@@ -190,7 +215,8 @@ namespace AgendaMedica.UI
             void LimpiarFormulario()
             {
                 txtNombre.Clear();
-                txtApellidos.Clear();
+                txtPrimerApellido.Clear();
+                txtSegundoApellido.Clear();
                 txtTelefono.Clear();
                 txtEmail.Clear();
 
@@ -237,7 +263,8 @@ namespace AgendaMedica.UI
                 idMedicoSeleccionado = medico.IdMedico;
 
                 txtNombre.Text = medico.Nombre;
-                txtApellidos.Text = medico.Apellidos;
+                txtPrimerApellido.Text = medico.PrimerApellido;
+                txtSegundoApellido.Text = medico.SegundoApellido;
                 txtTelefono.Text = medico.Telefono;
                 txtEmail.Text = medico.Email;
 
@@ -259,7 +286,8 @@ namespace AgendaMedica.UI
                     MedicoModelo medico = new MedicoModelo
                     {
                         Nombre = txtNombre.Text.Trim(),
-                        Apellidos = txtApellidos.Text.Trim(),
+                        PrimerApellido = txtPrimerApellido.Text.Trim(),
+                        SegundoApellido = txtSegundoApellido.Text.Trim(),
                         IdEspecialidad = Convert.ToInt32(cmbEspecialidad.SelectedValue),
                         Telefono = txtTelefono.Text.Trim(),
                         Email = txtEmail.Text.Trim()
@@ -298,7 +326,8 @@ namespace AgendaMedica.UI
                     {
                         IdMedico = idMedicoSeleccionado,
                         Nombre = txtNombre.Text.Trim(),
-                        Apellidos = txtApellidos.Text.Trim(),
+                        PrimerApellido = txtPrimerApellido.Text.Trim(),
+                        SegundoApellido = txtSegundoApellido.Text.Trim(),
                         IdEspecialidad = Convert.ToInt32(cmbEspecialidad.SelectedValue),
                         Telefono = txtTelefono.Text.Trim(),
                         Email = txtEmail.Text.Trim()

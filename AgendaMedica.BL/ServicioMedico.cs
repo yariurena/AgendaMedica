@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -32,17 +33,16 @@ namespace AgendaMedica.BL
             datos.ActualizarMedico(medico);
         }
 
-
         private void ValidarMedico(MedicoModelo medico)
         {
             if (medico == null)
             {
-                throw new ArgumentNullException(nameof(medico),
-                    "No se proporcionaron los datos del médico.");
+                throw new ArgumentNullException(nameof(medico), "No se proporcionaron los datos del médico.");
             }
 
             medico.Nombre = medico.Nombre?.Trim() ?? "";
-            medico.Apellidos = medico.Apellidos?.Trim() ?? "";
+            medico.PrimerApellido = medico.PrimerApellido?.Trim() ?? "";
+            medico.SegundoApellido = medico.SegundoApellido?.Trim() ?? "";
             medico.Email = medico.Email?.Trim() ?? "";
             medico.Telefono = medico.Telefono?.Trim() ?? "";
 
@@ -51,9 +51,14 @@ namespace AgendaMedica.BL
                 throw new ArgumentException("El nombre del médico es obligatorio.");
             }
 
-            if (string.IsNullOrWhiteSpace(medico.Apellidos))
+            if (string.IsNullOrWhiteSpace(medico.PrimerApellido))
             {
-                throw new ArgumentException("Los apellidos del médico son obligatorios.");
+                throw new ArgumentException("El primer apellido del médico es obligatorio.");
+            }
+
+            if (string.IsNullOrWhiteSpace(medico.SegundoApellido))
+            {
+                throw new ArgumentException("El segundo apellido del médico es obligatorio.");
             }
 
             if (medico.IdEspecialidad <= 0)
@@ -87,7 +92,7 @@ namespace AgendaMedica.BL
 
             if (!string.IsNullOrWhiteSpace(medico.Telefono))
             {
-                string telefono = Regex.Replace(medico.Telefono, @"[\s\-\(\)]", "");
+                string telefono = Regex.Replace(medico.Telefono, @"[\s\-()]", "");
 
                 if (!Regex.IsMatch(telefono, @"^(?:\+506)?\d{8}$"))
                 {

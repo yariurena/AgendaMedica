@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using MySqlConnector;
 
@@ -15,18 +14,7 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"
-                    SELECT
-                        id_paciente,
-                        nombre,
-                        apellidos,
-                        cedula,
-                        direccion,
-                        email,
-                        `FechaNacimiento`,
-                        telefono
-                    FROM Paciente
-                    ORDER BY apellidos, nombre";
+                string consulta = @"SELECT id_paciente, nombre, Primer_apellido, Segundo_apellido, cedula, direccion, email, `FechaNacimiento`, telefono FROM Paciente ORDER BY Primer_apellido, Segundo_apellido, nombre";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 using (MySqlDataReader lector = comando.ExecuteReader())
@@ -37,11 +25,11 @@ namespace AgendaMedica.DAL
 
                         paciente.IdPaciente = Convert.ToInt32(lector["id_paciente"]);
                         paciente.Nombre = Convert.ToString(lector["nombre"]) ?? "";
-                        paciente.Apellidos = Convert.ToString(lector["apellidos"]) ?? "";
+                        paciente.PrimerApellido = Convert.ToString(lector["Primer_apellido"]) ?? "";
+                        paciente.SegundoApellido = Convert.ToString(lector["Segundo_apellido"]) ?? "";
                         paciente.Cedula = Convert.ToString(lector["cedula"]) ?? "";
                         paciente.Direccion = Convert.ToString(lector["direccion"]) ?? "";
                         paciente.Email = Convert.ToString(lector["email"]) ?? "";
-
                         paciente.FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value? (DateTime?)null: Convert.ToDateTime(lector["FechaNacimiento"]);
                         paciente.Telefono = Convert.ToString(lector["telefono"]) ?? "";
 
@@ -58,22 +46,16 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"
-                    INSERT INTO Paciente
-                    (nombre, apellidos, cedula, direccion, email,
-                    FechaNacimiento, telefono)
-                    VALUES
-                    (@nombre, @apellidos, @cedula, @direccion, @email,
-                    @fecha, @telefono)";
+                string consulta = @"INSERT INTO Paciente(nombre, Primer_apellido, Segundo_apellido, cedula, direccion, email, FechaNacimiento, telefono) VALUES (@nombre, @primerApellido, @segundoApellido, @cedula, @direccion, @email, @fecha, @telefono)";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", paciente.Nombre);
-                    comando.Parameters.AddWithValue("@apellidos", paciente.Apellidos);
+                    comando.Parameters.AddWithValue("@primerApellido", paciente.PrimerApellido);
+                    comando.Parameters.AddWithValue("@segundoApellido", paciente.SegundoApellido);
                     comando.Parameters.AddWithValue("@cedula", paciente.Cedula);
                     comando.Parameters.AddWithValue("@direccion", paciente.Direccion);
                     comando.Parameters.AddWithValue("@email", paciente.Email);
-
                     comando.Parameters.AddWithValue("@fecha", paciente.FechaNacimiento.HasValue? (object)paciente.FechaNacimiento.Value: DBNull.Value);
                     comando.Parameters.AddWithValue("@telefono", paciente.Telefono);
 
@@ -88,26 +70,16 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"
-                    UPDATE Paciente
-                    SET
-                        nombre = @nombre,
-                        apellidos = @apellidos,
-                        cedula = @cedula,
-                        direccion = @direccion,
-                        email = @email,
-                        FechaNacimiento = @fecha,
-                        telefono = @telefono
-                    WHERE id_paciente = @idPaciente";
+                string consulta = @"UPDATE Paciente SET nombre = @nombre, Primer_apellido = @primerApellido, Segundo_apellido = @segundoApellido, cedula = @cedula, direccion = @direccion, email = @email, FechaNacimiento = @fecha, telefono = @telefono WHERE id_paciente = @idPaciente";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", paciente.Nombre);
-                    comando.Parameters.AddWithValue("@apellidos", paciente.Apellidos);
+                    comando.Parameters.AddWithValue("@primerApellido", paciente.PrimerApellido);
+                    comando.Parameters.AddWithValue("@segundoApellido", paciente.SegundoApellido);
                     comando.Parameters.AddWithValue("@cedula", paciente.Cedula);
                     comando.Parameters.AddWithValue("@direccion", paciente.Direccion);
                     comando.Parameters.AddWithValue("@email", paciente.Email);
-
                     comando.Parameters.AddWithValue("@fecha", paciente.FechaNacimiento.HasValue? (object)paciente.FechaNacimiento.Value: DBNull.Value);
                     comando.Parameters.AddWithValue("@telefono", paciente.Telefono);
                     comando.Parameters.AddWithValue("@idPaciente", paciente.IdPaciente);
@@ -142,11 +114,7 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"
-                    SELECT COUNT(*)
-                    FROM Paciente
-                    WHERE cedula = @cedula
-                    AND id_paciente <> @idPaciente";
+                string consulta = @"SELECT COUNT(*) FROM Paciente WHERE cedula = @cedula AND id_paciente <> @idPaciente";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {

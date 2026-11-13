@@ -15,7 +15,7 @@ namespace AgendaMedica.UI
 
             this.Text = "Agenda Médica - Gestión de pacientes";
             this.Width = 1100;
-            this.Height = 700;
+            this.Height = 780;
             this.StartPosition = FormStartPosition.CenterScreen;
 
             Label lblTitulo = new Label();
@@ -37,7 +37,7 @@ namespace AgendaMedica.UI
             tablaPacientes.Left = 20;
             tablaPacientes.Top = 105;
             tablaPacientes.Width = 570;
-            tablaPacientes.Height = 480;
+            tablaPacientes.Height = 550;
             tablaPacientes.ReadOnly = true;
             tablaPacientes.AllowUserToAddRows = false;
             tablaPacientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -55,59 +55,70 @@ namespace AgendaMedica.UI
             txtNombre.Top = 70;
             txtNombre.Width = 350;
 
-            Label lblApellidos = new Label();
-            lblApellidos.Text = "Apellidos:";
-            lblApellidos.Left = 620;
-            lblApellidos.Top = 110;
-            lblApellidos.Width = 250;
+            Label lblPrimerApellido = new Label();
+            lblPrimerApellido.Text = "Primer apellido:";
+            lblPrimerApellido.Left = 620;
+            lblPrimerApellido.Top = 110;
+            lblPrimerApellido.Width = 250;
 
-            TextBox txtApellidos = new TextBox();
-            txtApellidos.Left = 620;
-            txtApellidos.Top = 135;
-            txtApellidos.Width = 350;
+            TextBox txtPrimerApellido = new TextBox();
+            txtPrimerApellido.Left = 620;
+            txtPrimerApellido.Top = 135;
+            txtPrimerApellido.Width = 350;
+
+            Label lblSegundoApellido = new Label();
+            lblSegundoApellido.Text = "Segundo apellido:";
+            lblSegundoApellido.Left = 620;
+            lblSegundoApellido.Top = 175;
+            lblSegundoApellido.Width = 250;
+
+            TextBox txtSegundoApellido = new TextBox();
+            txtSegundoApellido.Left = 620;
+            txtSegundoApellido.Top = 200;
+            txtSegundoApellido.Width = 350;
 
             Label lblCedula = new Label();
             lblCedula.Text = "Cédula:";
             lblCedula.Left = 620;
-            lblCedula.Top = 175;
+            lblCedula.Top = 240;
             lblCedula.Width = 250;
 
             TextBox txtCedula = new TextBox();
             txtCedula.Left = 620;
-            txtCedula.Top = 200;
+            txtCedula.Top = 265;
             txtCedula.Width = 350;
 
             Label lblDireccion = new Label();
             lblDireccion.Text = "Dirección:";
             lblDireccion.Left = 620;
-            lblDireccion.Top = 240;
+            lblDireccion.Top = 305;
             lblDireccion.Width = 250;
 
             TextBox txtDireccion = new TextBox();
             txtDireccion.Left = 620;
-            txtDireccion.Top = 265;
+            txtDireccion.Top = 330;
             txtDireccion.Width = 350;
 
             Label lblEmail = new Label();
             lblEmail.Text = "Correo electrónico:";
             lblEmail.Left = 620;
-            lblEmail.Top = 305;
+            lblEmail.Top = 370;
             lblEmail.Width = 250;
 
             TextBox txtEmail = new TextBox();
             txtEmail.Left = 620;
-            txtEmail.Top = 330;
+            txtEmail.Top = 395;
             txtEmail.Width = 350;
 
             Label lblFecha = new Label();
             lblFecha.Text = "Fecha de nacimiento:";
             lblFecha.Left = 620;
-            lblFecha.Top = 370;
+            lblFecha.Top = 435;
             lblFecha.Width = 250;
 
             DateTimePicker dtpFechaNacimiento = new DateTimePicker();
             dtpFechaNacimiento.Left = 620;
-            dtpFechaNacimiento.Top = 395;
+            dtpFechaNacimiento.Top = 460;
             dtpFechaNacimiento.Width = 350;
             dtpFechaNacimiento.Format = DateTimePickerFormat.Short;
             dtpFechaNacimiento.ShowCheckBox = true;
@@ -116,25 +127,25 @@ namespace AgendaMedica.UI
             Label lblTelefono = new Label();
             lblTelefono.Text = "Teléfono:";
             lblTelefono.Left = 620;
-            lblTelefono.Top = 435;
+            lblTelefono.Top = 500;
             lblTelefono.Width = 250;
 
             TextBox txtTelefono = new TextBox();
             txtTelefono.Left = 620;
-            txtTelefono.Top = 460;
+            txtTelefono.Top = 525;
             txtTelefono.Width = 350;
 
             Button btnRegistrar = new Button();
             btnRegistrar.Text = "Registrar paciente";
             btnRegistrar.Left = 620;
-            btnRegistrar.Top = 510;
+            btnRegistrar.Top = 575;
             btnRegistrar.Width = 165;
             btnRegistrar.Height = 40;
 
             Button btnActualizar = new Button();
             btnActualizar.Text = "Actualizar paciente";
             btnActualizar.Left = 800;
-            btnActualizar.Top = 510;
+            btnActualizar.Top = 575;
             btnActualizar.Width = 170;
             btnActualizar.Height = 40;
             btnActualizar.Enabled = false;
@@ -142,7 +153,7 @@ namespace AgendaMedica.UI
             Button btnLimpiar = new Button();
             btnLimpiar.Text = "Limpiar campos";
             btnLimpiar.Left = 620;
-            btnLimpiar.Top = 560;
+            btnLimpiar.Top = 625;
             btnLimpiar.Width = 165;
             btnLimpiar.Height = 35;
 
@@ -152,8 +163,10 @@ namespace AgendaMedica.UI
 
             this.Controls.Add(lblNombre);
             this.Controls.Add(txtNombre);
-            this.Controls.Add(lblApellidos);
-            this.Controls.Add(txtApellidos);
+            this.Controls.Add(lblPrimerApellido);
+            this.Controls.Add(txtPrimerApellido);
+            this.Controls.Add(lblSegundoApellido);
+            this.Controls.Add(txtSegundoApellido);
             this.Controls.Add(lblCedula);
             this.Controls.Add(txtCedula);
             this.Controls.Add(lblDireccion);
@@ -186,8 +199,11 @@ namespace AgendaMedica.UI
                 if (tablaPacientes.Columns["Nombre"] != null)
                     tablaPacientes.Columns["Nombre"].HeaderText = "Nombre";
 
-                if (tablaPacientes.Columns["Apellidos"] != null)
-                    tablaPacientes.Columns["Apellidos"].HeaderText = "Apellidos";
+                if (tablaPacientes.Columns["PrimerApellido"] != null)
+                    tablaPacientes.Columns["PrimerApellido"].HeaderText = "Primer apellido";
+
+                if (tablaPacientes.Columns["SegundoApellido"] != null)
+                    tablaPacientes.Columns["SegundoApellido"].HeaderText = "Segundo apellido";
 
                 if (tablaPacientes.Columns["Cedula"] != null)
                     tablaPacientes.Columns["Cedula"].HeaderText = "Cédula";
@@ -199,8 +215,7 @@ namespace AgendaMedica.UI
                     tablaPacientes.Columns["Email"].HeaderText = "Correo";
 
                 if (tablaPacientes.Columns["FechaNacimiento"] != null)
-                    tablaPacientes.Columns["FechaNacimiento"].HeaderText =
-                        "Fecha de nacimiento";
+                    tablaPacientes.Columns["FechaNacimiento"].HeaderText = "Fecha de nacimiento";
 
                 if (tablaPacientes.Columns["Telefono"] != null)
                     tablaPacientes.Columns["Telefono"].HeaderText = "Teléfono";
@@ -209,7 +224,8 @@ namespace AgendaMedica.UI
             void LimpiarFormulario()
             {
                 txtNombre.Clear();
-                txtApellidos.Clear();
+                txtPrimerApellido.Clear();
+                txtSegundoApellido.Clear();
                 txtCedula.Clear();
                 txtDireccion.Clear();
                 txtEmail.Clear();
@@ -249,7 +265,8 @@ namespace AgendaMedica.UI
                 idPacienteSeleccionado = paciente.IdPaciente;
 
                 txtNombre.Text = paciente.Nombre;
-                txtApellidos.Text = paciente.Apellidos;
+                txtPrimerApellido.Text = paciente.PrimerApellido;
+                txtSegundoApellido.Text = paciente.SegundoApellido;
                 txtCedula.Text = paciente.Cedula;
                 txtDireccion.Text = paciente.Direccion;
                 txtEmail.Text = paciente.Email;
@@ -272,15 +289,16 @@ namespace AgendaMedica.UI
                 try
                 {
                     PacienteModelo paciente = new PacienteModelo
-                        {
-                            Nombre = txtNombre.Text.Trim(),
-                            Apellidos = txtApellidos.Text.Trim(),
-                            Cedula = txtCedula.Text.Trim(),
-                            Direccion = txtDireccion.Text.Trim(),
-                            Email = txtEmail.Text.Trim(),
-                            Telefono = txtTelefono.Text.Trim(),
-                            FechaNacimiento = dtpFechaNacimiento.Checked? dtpFechaNacimiento.Value.Date: (DateTime?)null
-                        };
+                    {
+                        Nombre = txtNombre.Text.Trim(),
+                        PrimerApellido = txtPrimerApellido.Text.Trim(),
+                        SegundoApellido = txtSegundoApellido.Text.Trim(),
+                        Cedula = txtCedula.Text.Trim(),
+                        Direccion = txtDireccion.Text.Trim(),
+                        Email = txtEmail.Text.Trim(),
+                        Telefono = txtTelefono.Text.Trim(),
+                        FechaNacimiento = dtpFechaNacimiento.Checked? dtpFechaNacimiento.Value.Date: (DateTime?)null
+                    };
 
                     servicio.RegistrarPaciente(paciente);
                     MessageBox.Show("Paciente registrado correctamente.");
@@ -305,17 +323,17 @@ namespace AgendaMedica.UI
                     }
 
                     PacienteModelo paciente = new PacienteModelo
-                        {
-                            IdPaciente = idPacienteSeleccionado,
-                            Nombre = txtNombre.Text.Trim(),
-                            Apellidos = txtApellidos.Text.Trim(),
-                            Cedula = txtCedula.Text.Trim(),
-                            Direccion = txtDireccion.Text.Trim(),
-                            Email = txtEmail.Text.Trim(),
-                            Telefono = txtTelefono.Text.Trim(),
-
-                            FechaNacimiento = dtpFechaNacimiento.Checked? dtpFechaNacimiento.Value.Date: (DateTime?)null
-                        };
+                    {
+                        IdPaciente = idPacienteSeleccionado,
+                        Nombre = txtNombre.Text.Trim(),
+                        PrimerApellido = txtPrimerApellido.Text.Trim(),
+                        SegundoApellido = txtSegundoApellido.Text.Trim(),
+                        Cedula = txtCedula.Text.Trim(),
+                        Direccion = txtDireccion.Text.Trim(),
+                        Email = txtEmail.Text.Trim(),
+                        Telefono = txtTelefono.Text.Trim(),
+                        FechaNacimiento = dtpFechaNacimiento.Checked? dtpFechaNacimiento.Value.Date: (DateTime?)null
+                    };
 
                     servicio.ActualizarPaciente(paciente);
                     MessageBox.Show("Paciente actualizado correctamente.");
