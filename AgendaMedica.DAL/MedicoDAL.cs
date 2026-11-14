@@ -15,7 +15,7 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"SELECT m.id_medico, m.Nombre, m.Primer_apellido, m.Segundo_apellido, m.id_especialidad, e.Nombre AS NombreEspecialidad, m.Telefono, m.Email FROM Medico m INNER JOIN Especialidad e ON m.id_especialidad = e.id_especialidad ORDER BY m.Primer_apellido, m.Segundo_apellido, m.Nombre";
+                string consulta = @"SELECT m.id_medico, m.Nombre, m.Primer_apellido, m.Segundo_apellido, m.id_especialidad, e.Nombre AS NombreEspecialidad, m.Telefono, m.Email, m.Activo FROM Medico m INNER JOIN Especialidad e ON m.id_especialidad = e.id_especialidad WHERE m.Activo = 1 ORDER BY m.Primer_apellido, m.Segundo_apellido, m.Nombre";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 using (MySqlDataReader lector = comando.ExecuteReader())
@@ -32,6 +32,7 @@ namespace AgendaMedica.DAL
                         medico.NombreEspecialidad = Convert.ToString(lector["NombreEspecialidad"]) ?? "";
                         medico.Telefono =lector["Telefono"] == DBNull.Value? "": Convert.ToString(lector["Telefono"]) ?? "";
                         medico.Email =lector["Email"] == DBNull.Value? "": Convert.ToString(lector["Email"]) ?? "";
+                        medico.Activo = Convert.ToBoolean(lector["Activo"]);
 
                         medicos.Add(medico);
                     }
@@ -84,6 +85,39 @@ namespace AgendaMedica.DAL
                 }
             }
         }
+        public void DesactivarMedico(int idMedico)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = "UPDATE Medico SET Activo = 0 WHERE id_medico = @idMedico";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@idMedico", idMedico);
+
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public int ContarMedicosActivosPorEspecialidad(int idEspecialidad)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = "SELECT COUNT(*) FROM Medico WHERE id_especialidad = @idEspecialidad AND Activo = 1";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@idEspecialidad", idEspecialidad);
+
+                    return Convert.ToInt32(comando.ExecuteScalar());
+                }
+            }
+        }
 
         public bool ExisteEspecialidad(int idEspecialidad)
         {
@@ -91,7 +125,7 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"SELECT COUNT(*) FROM Especialidad WHERE id_especialidad = @idEspecialidad";
+                string consulta = @"SELECT COUNT(*) FROM Especialidad WHERE id_especialidad = @idEspecialidad AND Activo = 1";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {

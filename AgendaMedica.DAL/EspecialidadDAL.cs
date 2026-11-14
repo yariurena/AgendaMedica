@@ -14,8 +14,7 @@ namespace AgendaMedica.DAL
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
             {
                 conexion.Open();
-                string consulta = @"SELECT id_especialidad, nombre FROM Especialidad ORDER BY nombre";
-
+                string consulta = @"SELECT id_especialidad, nombre, Activo FROM Especialidad WHERE Activo = 1 ORDER BY nombre";
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 using (MySqlDataReader lector = comando.ExecuteReader())
                 {
@@ -24,6 +23,7 @@ namespace AgendaMedica.DAL
                         EspecialidadModelo especialidad = new EspecialidadModelo();
                         especialidad.IdEspecialidad = Convert.ToInt32(lector["id_especialidad"]);
                         especialidad.Nombre = Convert.ToString(lector["nombre"]) ?? "";
+                        especialidad.Activo = Convert.ToBoolean(lector["Activo"]);
 
                         especialidades.Add(especialidad);
                     }
@@ -60,6 +60,22 @@ namespace AgendaMedica.DAL
                 {
                     comando.Parameters.AddWithValue("@nombre", especialidad.Nombre);
                     comando.Parameters.AddWithValue("@idEspecialidad", especialidad.IdEspecialidad);
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DesactivarEspecialidad(int idEspecialidad)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = "UPDATE Especialidad SET Activo = 0 WHERE id_especialidad = @idEspecialidad";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@idEspecialidad", idEspecialidad);
                     comando.ExecuteNonQuery();
                 }
             }

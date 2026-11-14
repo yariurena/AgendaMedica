@@ -33,6 +33,15 @@ namespace AgendaMedica.BL
             datos.ActualizarMedico(medico);
         }
 
+        public void DesactivarMedico(int idMedico)
+        {
+            if (idMedico <= 0)
+            {
+                throw new ArgumentException("El médico seleccionado no es válido.");
+            }
+            datos.DesactivarMedico(idMedico);
+        }
+
         private void ValidarMedico(MedicoModelo medico)
         {
             if (medico == null)

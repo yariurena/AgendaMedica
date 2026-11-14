@@ -157,10 +157,17 @@ namespace AgendaMedica.UI
             btnLimpiar.Width = 165;
             btnLimpiar.Height = 35;
 
+            Button btnDesactivar = new Button();
+            btnDesactivar.Text = "Desactivar paciente";
+            btnDesactivar.Left = 800;
+            btnDesactivar.Top = 625;
+            btnDesactivar.Width = 170;
+            btnDesactivar.Height = 35;
+            btnDesactivar.Enabled = false;
+
             this.Controls.Add(lblTitulo);
             this.Controls.Add(btnConsultar);
             this.Controls.Add(tablaPacientes);
-
             this.Controls.Add(lblNombre);
             this.Controls.Add(txtNombre);
             this.Controls.Add(lblPrimerApellido);
@@ -177,10 +184,10 @@ namespace AgendaMedica.UI
             this.Controls.Add(dtpFechaNacimiento);
             this.Controls.Add(lblTelefono);
             this.Controls.Add(txtTelefono);
-
             this.Controls.Add(btnRegistrar);
             this.Controls.Add(btnActualizar);
             this.Controls.Add(btnLimpiar);
+            this.Controls.Add(btnDesactivar);
 
             int idPacienteSeleccionado = 0;
 
@@ -195,6 +202,9 @@ namespace AgendaMedica.UI
 
                 if (tablaPacientes.Columns["IdPaciente"] != null)
                     tablaPacientes.Columns["IdPaciente"].Visible = false;
+
+                if (tablaPacientes.Columns["Activo"] != null)
+                    tablaPacientes.Columns["Activo"].Visible = false;
 
                 if (tablaPacientes.Columns["Nombre"] != null)
                     tablaPacientes.Columns["Nombre"].HeaderText = "Nombre";
@@ -235,6 +245,7 @@ namespace AgendaMedica.UI
 
                 idPacienteSeleccionado = 0;
                 btnActualizar.Enabled = false;
+                btnDesactivar.Enabled = false;
 
                 tablaPacientes.ClearSelection();
             }
@@ -282,6 +293,7 @@ namespace AgendaMedica.UI
                     dtpFechaNacimiento.Checked = false;
                 }
                 btnActualizar.Enabled = true;
+                btnDesactivar.Enabled = true;
             };
 
             btnRegistrar.Click += (sender, e) =>
@@ -350,6 +362,37 @@ namespace AgendaMedica.UI
             btnLimpiar.Click += (sender, e) =>
             {
                 LimpiarFormulario();
+            };
+
+            btnDesactivar.Click += (sender, e) =>
+            {
+                try
+                {
+                    if (idPacienteSeleccionado <= 0)
+                    {
+                        MessageBox.Show("Primero debe seleccionar un paciente de la tabla.");
+                        return;
+                    }
+
+                    DialogResult respuesta = MessageBox.Show(
+                        "¿Desea desactivar a este paciente? Dejará de aparecer en la lista, pero su información se conserva.",
+                        "Confirmar desactivación",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (respuesta != DialogResult.Yes)
+                        return;
+
+                    servicio.DesactivarPaciente(idPacienteSeleccionado);
+                    MessageBox.Show("Paciente desactivado correctamente.");
+
+                    CargarPacientes();
+                    LimpiarFormulario();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("No se pudo desactivar el paciente: " + ex.Message);
+                }
             };
         }
     }

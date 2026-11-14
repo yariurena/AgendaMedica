@@ -14,7 +14,7 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = @"SELECT id_paciente, nombre, Primer_apellido, Segundo_apellido, cedula, direccion, email, `FechaNacimiento`, telefono FROM Paciente ORDER BY Primer_apellido, Segundo_apellido, nombre";
+                string consulta = @"SELECT id_paciente, nombre, Primer_apellido, Segundo_apellido, cedula, direccion, email, `FechaNacimiento`, telefono, Activo FROM Paciente WHERE Activo = 1 ORDER BY Primer_apellido, Segundo_apellido, nombre";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 using (MySqlDataReader lector = comando.ExecuteReader())
@@ -32,6 +32,7 @@ namespace AgendaMedica.DAL
                         paciente.Email = Convert.ToString(lector["email"]) ?? "";
                         paciente.FechaNacimiento = lector["FechaNacimiento"] == DBNull.Value? (DateTime?)null: Convert.ToDateTime(lector["FechaNacimiento"]);
                         paciente.Telefono = Convert.ToString(lector["telefono"]) ?? "";
+                        paciente.Activo = Convert.ToBoolean(lector["Activo"]);
 
                         pacientes.Add(paciente);
                     }
@@ -84,6 +85,21 @@ namespace AgendaMedica.DAL
                     comando.Parameters.AddWithValue("@telefono", paciente.Telefono);
                     comando.Parameters.AddWithValue("@idPaciente", paciente.IdPaciente);
 
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+        public void DesactivarPaciente(int idPaciente)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = "UPDATE Paciente SET Activo = 0 WHERE id_paciente = @idPaciente";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@idPaciente", idPaciente);
                     comando.ExecuteNonQuery();
                 }
             }

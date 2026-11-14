@@ -77,6 +77,14 @@ namespace AgendaMedica.UI
             btnLimpiar.Width = 145;
             btnLimpiar.Height = 35;
 
+            Button btnDesactivar = new Button();
+            btnDesactivar.Text = "Desactivar especialidad";
+            btnDesactivar.Left = 625;
+            btnDesactivar.Top = 260;
+            btnDesactivar.Width = 145;
+            btnDesactivar.Height = 35;
+            btnDesactivar.Enabled = false;
+
             this.Controls.Add(lblTitulo);
             this.Controls.Add(btnConsultar);
             this.Controls.Add(tablaEspecialidades);
@@ -85,6 +93,7 @@ namespace AgendaMedica.UI
             this.Controls.Add(btnRegistrar);
             this.Controls.Add(btnActualizar);
             this.Controls.Add(btnLimpiar);
+            this.Controls.Add(btnDesactivar);
 
             int idEspecialidadSeleccionada = 0;
 
@@ -102,6 +111,11 @@ namespace AgendaMedica.UI
                     tablaEspecialidades.Columns["IdEspecialidad"].Visible = false;
                 }
 
+                if (tablaEspecialidades.Columns["Activo"] != null)
+                {
+                    tablaEspecialidades.Columns["Activo"].Visible = false;
+                }
+
                 if (tablaEspecialidades.Columns["Nombre"] != null)
                 {
                     tablaEspecialidades.Columns["Nombre"].HeaderText = "Especialidad";
@@ -113,6 +127,7 @@ namespace AgendaMedica.UI
                 txtNombre.Clear();
                 idEspecialidadSeleccionada = 0;
                 btnActualizar.Enabled = false;
+                btnDesactivar.Enabled = false;
                 tablaEspecialidades.ClearSelection();
             }
 
@@ -142,6 +157,7 @@ namespace AgendaMedica.UI
                 idEspecialidadSeleccionada = especialidad.IdEspecialidad;
                 txtNombre.Text = especialidad.Nombre;
                 btnActualizar.Enabled = true;
+                btnDesactivar.Enabled = true;
             };
 
             btnRegistrar.Click += (sender, e) =>
@@ -197,6 +213,37 @@ namespace AgendaMedica.UI
             btnLimpiar.Click += (sender, e) =>
             {
                 LimpiarFormulario();
+            };
+
+            btnDesactivar.Click += (sender, e) =>
+            {
+                try
+                {
+                    if (idEspecialidadSeleccionada <= 0)
+                    {
+                        MessageBox.Show("Primero debe seleccionar una especialidad.");
+                        return;
+                    }
+
+                    DialogResult respuesta = MessageBox.Show(
+                        "¿Desea desactivar esta especialidad? Dejará de aparecer en la lista, pero su información se conserva.",
+                        "Confirmar desactivación",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (respuesta != DialogResult.Yes)
+                        return;
+
+                    servicio.DesactivarEspecialidad(idEspecialidadSeleccionada);
+                    MessageBox.Show("Especialidad desactivada correctamente.");
+
+                    CargarEspecialidades();
+                    LimpiarFormulario();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("No se pudo desactivar la especialidad: " + ex.Message);
+                }
             };
         }
     }

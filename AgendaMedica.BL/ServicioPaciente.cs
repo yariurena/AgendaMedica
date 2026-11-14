@@ -43,6 +43,16 @@ namespace AgendaMedica.BL
             datos.ActualizarPaciente(paciente);
         }
 
+        public void DesactivarPaciente(int idPaciente)
+        {
+            if (idPaciente <= 0)
+            {
+                throw new ArgumentException("El paciente seleccionado no es válido.");
+            }
+
+            datos.DesactivarPaciente(idPaciente);
+        }
+
         private void ValidarPaciente(PacienteModelo paciente)
         {
             if (paciente == null)

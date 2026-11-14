@@ -8,6 +8,7 @@ namespace AgendaMedica.BL
     public class ServicioEspecialidad
     {
         private readonly EspecialidadDAL datos = new EspecialidadDAL();
+        private readonly MedicoDAL datosMedico = new MedicoDAL();
 
         public List<EspecialidadModelo> ObtenerEspecialidades()
         {
@@ -39,6 +40,24 @@ namespace AgendaMedica.BL
                 throw new ArgumentException("Otra especialidad ya tiene ese nombre.");
             }
             datos.ActualizarEspecialidad(especialidad);
+        }
+
+        public void DesactivarEspecialidad(int idEspecialidad)
+        {
+            if (idEspecialidad <= 0)
+            {
+                throw new ArgumentException("La especialidad seleccionada no es válida.");
+            }
+
+            int medicosActivos = datosMedico.ContarMedicosActivosPorEspecialidad(idEspecialidad);
+
+            if (medicosActivos > 0)
+            {
+                throw new InvalidOperationException(
+                    "No se puede desactivar la especialidad porque tiene " + medicosActivos +
+                    " médico(s) activo(s). Reasigne o desactive primero a esos médicos.");
+            }
+            datos.DesactivarEspecialidad(idEspecialidad);
         }
 
         private void ValidarEspecialidad(EspecialidadModelo especialidad)
