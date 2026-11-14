@@ -1,4 +1,3 @@
-
 using System;
 using System.Windows.Forms;
 
@@ -45,10 +44,18 @@ namespace AgendaMedica.UI
             btnEspecialidades.Width = 180;
             btnEspecialidades.Height = 60;
 
+            Button btnHorarios = new Button();
+            btnHorarios.Text = "Horarios de médicos";
+            btnHorarios.Left = 285;
+            btnHorarios.Top = 235;
+            btnHorarios.Width = 180;
+            btnHorarios.Height = 60;
+
             this.Controls.Add(lblTitulo);
             this.Controls.Add(btnPacientes);
             this.Controls.Add(btnMedicos);
             this.Controls.Add(btnEspecialidades);
+            this.Controls.Add(btnHorarios);
 
             btnPacientes.Click += (sender, e) =>
             {
@@ -65,6 +72,12 @@ namespace AgendaMedica.UI
             btnEspecialidades.Click += (sender, e) =>
             {
                 FrmEspecialidades ventana = new FrmEspecialidades();
+                ventana.ShowDialog();
+            };
+
+            btnHorarios.Click += (sender, e) =>
+            {
+                FrmHorarios ventana = new FrmHorarios();
                 ventana.ShowDialog();
             };
         }

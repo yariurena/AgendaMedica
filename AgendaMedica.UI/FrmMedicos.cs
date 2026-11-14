@@ -215,6 +215,18 @@ namespace AgendaMedica.UI
 
                 if (tablaMedicos.Columns["Email"] != null)
                     tablaMedicos.Columns["Email"].HeaderText = "Correo";
+
+                string[] ordenColumnas = { "Nombre", "PrimerApellido", "SegundoApellido", "NombreEspecialidad", "Telefono", "Email" };
+                int posicion = 0;
+
+                foreach (string nombreColumna in ordenColumnas)
+                {
+                    if (tablaMedicos.Columns[nombreColumna] != null)
+                    {
+                        tablaMedicos.Columns[nombreColumna].DisplayIndex = posicion;
+                        posicion++;
+                    }
+                }
             }
 
             void LimpiarFormulario()
