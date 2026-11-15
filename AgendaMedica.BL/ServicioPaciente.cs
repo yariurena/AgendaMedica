@@ -11,6 +11,8 @@ namespace AgendaMedica.BL
     public class ServicioPaciente
     {
         private readonly PacienteDAL datos = new PacienteDAL();
+        private readonly CitaDAL datosCita = new CitaDAL();
+
         public List<PacienteModelo> ObtenerPacientes()
         {
             return datos.ObtenerPacientes();
@@ -48,6 +50,13 @@ namespace AgendaMedica.BL
             if (idPaciente <= 0)
             {
                 throw new ArgumentException("El paciente seleccionado no es válido.");
+            }
+
+            int citasPendientes = datosCita.ContarCitasPendientesPorPaciente(idPaciente);
+
+            if (citasPendientes > 0)
+            {
+                throw new InvalidOperationException("No se puede desactivar al paciente porque tiene " + citasPendientes + " cita(s) pendiente(s). Cancele o atienda primero esas citas.");
             }
 
             datos.DesactivarPaciente(idPaciente);

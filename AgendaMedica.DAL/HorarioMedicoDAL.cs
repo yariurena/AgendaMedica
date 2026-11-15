@@ -97,5 +97,25 @@ namespace AgendaMedica.DAL
                 }
             }
         }
+
+        public bool ExisteHorarioQueCubra(int idMedico, string dia, TimeSpan horaInicio, TimeSpan horaFin)
+        {
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = @"SELECT COUNT(*) FROM HorarioMedico WHERE id_medico = @idMedico AND Dia = @dia AND Hora_inicio <= @horaInicio AND Hora_fin >= @horaFin";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@idMedico", idMedico);
+                    comando.Parameters.AddWithValue("@dia", dia);
+                    comando.Parameters.AddWithValue("@horaInicio", horaInicio);
+                    comando.Parameters.AddWithValue("@horaFin", horaFin);
+
+                    return Convert.ToInt32(comando.ExecuteScalar()) > 0;
+                }
+            }
+        }
     }
 }

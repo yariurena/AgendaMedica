@@ -51,11 +51,19 @@ namespace AgendaMedica.UI
             btnHorarios.Width = 180;
             btnHorarios.Height = 60;
 
+            Button btnCitas = new Button();
+            btnCitas.Text = "Gestión de citas";
+            btnCitas.Left = 490;
+            btnCitas.Top = 235;
+            btnCitas.Width = 180;
+            btnCitas.Height = 60;
+
             this.Controls.Add(lblTitulo);
             this.Controls.Add(btnPacientes);
             this.Controls.Add(btnMedicos);
             this.Controls.Add(btnEspecialidades);
             this.Controls.Add(btnHorarios);
+            this.Controls.Add(btnCitas);
 
             btnPacientes.Click += (sender, e) =>
             {
@@ -78,6 +86,12 @@ namespace AgendaMedica.UI
             btnHorarios.Click += (sender, e) =>
             {
                 FrmHorarios ventana = new FrmHorarios();
+                ventana.ShowDialog();
+            };
+
+            btnCitas.Click += (sender, e) =>
+            {
+                FrmCitas ventana = new FrmCitas();
                 ventana.ShowDialog();
             };
         }

@@ -11,6 +11,8 @@ namespace AgendaMedica.BL
     public class ServicioMedico
     {
         private readonly MedicoDAL datos = new MedicoDAL();
+        private readonly CitaDAL datosCita = new CitaDAL();
+
         public List<MedicoModelo> ObtenerMedicos()
         {
             return datos.ObtenerMedicos();
@@ -39,6 +41,14 @@ namespace AgendaMedica.BL
             {
                 throw new ArgumentException("El médico seleccionado no es válido.");
             }
+
+            int citasPendientes = datosCita.ContarCitasPendientesPorMedico(idMedico);
+
+            if (citasPendientes > 0)
+            {
+                throw new InvalidOperationException("No se puede desactivar al médico porque tiene " + citasPendientes + " cita(s) pendiente(s). Cancele, reprograme o atienda primero esas citas.");
+            }
+
             datos.DesactivarMedico(idMedico);
         }
 
