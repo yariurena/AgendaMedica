@@ -50,7 +50,7 @@ namespace AgendaMedica.DAL
             {
                 conexion.Open();
 
-                string consulta = ConsultaBase + @"WHERE (@idMedico IS NULL OR c.id_medico = @idMedico) AND (@idPaciente IS NULL OR c.id_paciente = @idPaciente) AND (@fecha IS NULL OR c.Fecha = @fecha) AND (@idEstado IS NULL OR c.id_estado = @idEstado) ORDER BY c.Fecha, c.Hora";
+                string consulta = ConsultaBase + " WHERE (@idMedico IS NULL OR c.id_medico = @idMedico)" + " AND (@idPaciente IS NULL OR c.id_paciente = @idPaciente)" + " AND (@fecha IS NULL OR c.Fecha = @fecha)" + " AND (@idEstado IS NULL OR c.id_estado = @idEstado)" + " ORDER BY c.Fecha, c.Hora";
 
                 using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
                 {
