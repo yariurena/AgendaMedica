@@ -1,99 +1,109 @@
-using System;
-using System.Windows.Forms;
+using AgendaMedica.BL;
 
 namespace AgendaMedica.UI
 {
     public partial class FrmPrincipal : Form
     {
+        private readonly ServicioUsuario servicioUsuario = new ServicioUsuario();
+
         public FrmPrincipal()
         {
             InitializeComponent();
+        }
 
-            this.Text = "Agenda Médica - Sistema de gestión";
-            this.Width = 750;
-            this.Height = 400;
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            Label lblTitulo = new Label();
-            lblTitulo.Text = "SISTEMA DE GESTIÓN - AGENDA MÉDICA";
-            lblTitulo.Left = 100;
-            lblTitulo.Top = 55;
-            lblTitulo.Width = 550;
-            lblTitulo.Height = 40;
-            lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            lblTitulo.Font = new System.Drawing.Font("Arial", 16, System.Drawing.FontStyle.Bold);
-
-            Button btnPacientes = new Button();
-            btnPacientes.Text = "Gestión de pacientes";
-            btnPacientes.Left = 80;
-            btnPacientes.Top = 150;
-            btnPacientes.Width = 180;
-            btnPacientes.Height = 60;
-
-            Button btnMedicos = new Button();
-            btnMedicos.Text = "Gestión de médicos";
-            btnMedicos.Left = 285;
-            btnMedicos.Top = 150;
-            btnMedicos.Width = 180;
-            btnMedicos.Height = 60;
-
-            Button btnEspecialidades = new Button();
-            btnEspecialidades.Text = "Gestión de especialidades";
-            btnEspecialidades.Left = 490;
-            btnEspecialidades.Top = 150;
-            btnEspecialidades.Width = 180;
-            btnEspecialidades.Height = 60;
-
-            Button btnHorarios = new Button();
-            btnHorarios.Text = "Horarios de médicos";
-            btnHorarios.Left = 285;
-            btnHorarios.Top = 235;
-            btnHorarios.Width = 180;
-            btnHorarios.Height = 60;
-
-            Button btnCitas = new Button();
-            btnCitas.Text = "Gestión de citas";
-            btnCitas.Left = 490;
-            btnCitas.Top = 235;
-            btnCitas.Width = 180;
-            btnCitas.Height = 60;
-
-            this.Controls.Add(lblTitulo);
-            this.Controls.Add(btnPacientes);
-            this.Controls.Add(btnMedicos);
-            this.Controls.Add(btnEspecialidades);
-            this.Controls.Add(btnHorarios);
-            this.Controls.Add(btnCitas);
-
-            btnPacientes.Click += (sender, e) =>
+        private void FrmPrincipal_Load(object? sender, EventArgs e)
+        {
+            if (SesionActual.Usuario != null)
             {
-                FrmPacientes ventana = new FrmPacientes();
-                ventana.ShowDialog();
-            };
+                lblBienvenida.Text = "Bienvenido(a), " + SesionActual.Usuario.NombreCompleto + "   |   Rol: " + SesionActual.Usuario.Rol;
+            }
+            AplicarPermisos();
+        }
 
-            btnMedicos.Click += (sender, e) =>
-            {
-                FrmMedicos ventana = new FrmMedicos();
-                ventana.ShowDialog();
-            };
+        private void AplicarPermisos()
+        {
+            mnuPacientes.Available = SesionActual.TienePermiso(Modulo.Pacientes);
+            mnuMedicos.Available = SesionActual.TienePermiso(Modulo.Medicos);
+            mnuEspecialidades.Available = SesionActual.TienePermiso(Modulo.Especialidades);
+            mnuHorarios.Available = SesionActual.TienePermiso(Modulo.Horarios);
+            mnuCitas.Available = SesionActual.TienePermiso(Modulo.Citas);
+            mnuHistorial.Available = SesionActual.TienePermiso(Modulo.Historial);
+            mnuReportes.Available = SesionActual.TienePermiso(Modulo.Reportes);
+            mnuUsuarios.Available = SesionActual.TienePermiso(Modulo.Usuarios);
 
-            btnEspecialidades.Click += (sender, e) =>
-            {
-                FrmEspecialidades ventana = new FrmEspecialidades();
-                ventana.ShowDialog();
-            };
+            mnuGestion.Available = mnuPacientes.Available || mnuMedicos.Available || mnuEspecialidades.Available || mnuHorarios.Available;
+            mnuConsultas.Available = mnuHistorial.Available || mnuReportes.Available;
+            mnuAdministracion.Available = mnuUsuarios.Available;
+        }
 
-            btnHorarios.Click += (sender, e) =>
+        private void AbrirVentana(Form ventana, Modulo modulo)
+        {
+            if (!SesionActual.TienePermiso(modulo))
             {
-                FrmHorarios ventana = new FrmHorarios();
-                ventana.ShowDialog();
-            };
+                ventana.Dispose();
+                MessageBox.Show("No tiene permiso para acceder a este módulo.");
+                return;
+            }
 
-            btnCitas.Click += (sender, e) =>
+            using (ventana)
             {
-                FrmCitas ventana = new FrmCitas();
-                ventana.ShowDialog();
-            };
+                ventana.ShowDialog(this);
+            }
+        }
+
+        private void mnuPacientes_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmPacientes(), Modulo.Pacientes);
+        }
+
+        private void mnuMedicos_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmMedicos(), Modulo.Medicos);
+        }
+
+        private void mnuEspecialidades_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmEspecialidades(), Modulo.Especialidades);
+        }
+
+        private void mnuHorarios_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmHorarios(), Modulo.Horarios);
+        }
+
+        private void mnuCitas_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmCitas(), Modulo.Citas);
+        }
+
+        private void mnuHistorial_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmHistorial(), Modulo.Historial);
+        }
+
+        private void mnuReportes_Click(object? sender, EventArgs e)
+        {
+            MessageBox.Show("Este módulo se agrega en uno de los siguientes pasos.");
+        }
+
+        private void mnuUsuarios_Click(object? sender, EventArgs e)
+        {
+            AbrirVentana(new FrmUsuarios(), Modulo.Usuarios);
+        }
+
+        private void mnuCerrarSesion_Click(object? sender, EventArgs e)
+        {
+            DialogResult respuesta = MessageBox.Show(
+                "¿Desea cerrar la sesión?",
+                "Cerrar sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (respuesta != DialogResult.Yes)
+                return;
+
+            servicioUsuario.CerrarSesion();
+            Close();
         }
     }
 }
