@@ -71,6 +71,35 @@ namespace AgendaMedica.DAL
             return citas;
         }
 
+        public List<Cita> ObtenerCitasPorRango(DateTime desde, DateTime hasta, int? idMedico, string? estado)
+        {
+            List<Cita> citas = new List<Cita>();
+
+            using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+            {
+                conexion.Open();
+
+                string consulta = ConsultaBase + " WHERE c.Fecha >= @desde AND c.Fecha <= @hasta" + " AND (@idMedico IS NULL OR c.id_medico = @idMedico)" + " AND (@estado IS NULL OR e.Nombre = @estado)" + " ORDER BY c.Fecha, c.Hora, NombreMedico";
+
+                using (MySqlCommand comando = new MySqlCommand(consulta, conexion))
+                {
+                    comando.Parameters.AddWithValue("@desde", desde.Date);
+                    comando.Parameters.AddWithValue("@hasta", hasta.Date);
+                    comando.Parameters.AddWithValue("@idMedico", idMedico.HasValue ? (object)idMedico.Value : DBNull.Value);
+                    comando.Parameters.AddWithValue("@estado", estado == null ? DBNull.Value : (object)estado);
+
+                    using (MySqlDataReader lector = comando.ExecuteReader())
+                    {
+                        while (lector.Read())
+                        {
+                            citas.Add(LeerCita(lector));
+                        }
+                    }
+                }
+            }
+            return citas;
+        }
+
         public Cita? ObtenerCitaPorId(int idCita)
         {
             using (MySqlConnection conexion = ConexionBD.ObtenerConexion())

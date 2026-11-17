@@ -83,7 +83,7 @@ namespace AgendaMedica.UI
 
         private void mnuReportes_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Este módulo se agrega en uno de los siguientes pasos.");
+            AbrirVentana(new FrmReportes(), Modulo.Reportes);
         }
 
         private void mnuUsuarios_Click(object? sender, EventArgs e)
