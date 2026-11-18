@@ -1,251 +1,22 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using AgendaMedica.BL;
-using MedicoModelo = AgendaMedica.Modelos.Medico;
+﻿using AgendaMedica.BL;
 using EspecialidadModelo = AgendaMedica.Modelos.Especialidad;
+using MedicoModelo = AgendaMedica.Modelos.Medico;
 
 namespace AgendaMedica.UI
 {
     public partial class FrmMedicos : Form
     {
+        private readonly ServicioMedico servicioMedico = new ServicioMedico();
+        private readonly ServicioEspecialidad servicioEspecialidad = new ServicioEspecialidad();
+        private int idMedicoSeleccionado = 0;
+
         public FrmMedicos()
         {
             InitializeComponent();
+        }
 
-            this.Text = "Agenda Médica - Gestión de médicos";
-            this.Width = 1000;
-            this.Height = 720;
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            Label lblTitulo = new Label();
-            lblTitulo.Text = "GESTIÓN DE MÉDICOS";
-            lblTitulo.Left = 20;
-            lblTitulo.Top = 15;
-            lblTitulo.Width = 300;
-            lblTitulo.Height = 30;
-            lblTitulo.Font = new System.Drawing.Font(
-                "Arial", 14, System.Drawing.FontStyle.Bold);
-
-            Button btnConsultar = new Button();
-            btnConsultar.Text = "Consultar médicos";
-            btnConsultar.Left = 20;
-            btnConsultar.Top = 60;
-            btnConsultar.Width = 160;
-            btnConsultar.Height = 35;
-
-            DataGridView tablaMedicos = new DataGridView();
-            tablaMedicos.Left = 20;
-            tablaMedicos.Top = 115;
-            tablaMedicos.Width = 550;
-            tablaMedicos.Height = 500;
-            tablaMedicos.ReadOnly = true;
-            tablaMedicos.AllowUserToAddRows = false;
-            tablaMedicos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            tablaMedicos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            tablaMedicos.MultiSelect = false;
-
-            Label lblNombre = new Label();
-            lblNombre.Text = "Nombre:";
-            lblNombre.Left = 610;
-            lblNombre.Top = 60;
-            lblNombre.Width = 250;
-
-            TextBox txtNombre = new TextBox();
-            txtNombre.Left = 610;
-            txtNombre.Top = 85;
-            txtNombre.Width = 280;
-
-            Label lblPrimerApellido = new Label();
-            lblPrimerApellido.Text = "Primer apellido:";
-            lblPrimerApellido.Left = 610;
-            lblPrimerApellido.Top = 125;
-            lblPrimerApellido.Width = 250;
-
-            TextBox txtPrimerApellido = new TextBox();
-            txtPrimerApellido.Left = 610;
-            txtPrimerApellido.Top = 150;
-            txtPrimerApellido.Width = 280;
-
-            Label lblSegundoApellido = new Label();
-            lblSegundoApellido.Text = "Segundo apellido:";
-            lblSegundoApellido.Left = 610;
-            lblSegundoApellido.Top = 190;
-            lblSegundoApellido.Width = 250;
-
-            TextBox txtSegundoApellido = new TextBox();
-            txtSegundoApellido.Left = 610;
-            txtSegundoApellido.Top = 215;
-            txtSegundoApellido.Width = 280;
-
-            Label lblEspecialidad = new Label();
-            lblEspecialidad.Text = "Especialidad:";
-            lblEspecialidad.Left = 610;
-            lblEspecialidad.Top = 255;
-            lblEspecialidad.Width = 250;
-
-            ComboBox cmbEspecialidad = new ComboBox();
-            cmbEspecialidad.Left = 610;
-            cmbEspecialidad.Top = 280;
-            cmbEspecialidad.Width = 280;
-            cmbEspecialidad.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            Label lblTelefono = new Label();
-            lblTelefono.Text = "Teléfono:";
-            lblTelefono.Left = 610;
-            lblTelefono.Top = 320;
-            lblTelefono.Width = 250;
-
-            TextBox txtTelefono = new TextBox();
-            txtTelefono.Left = 610;
-            txtTelefono.Top = 345;
-            txtTelefono.Width = 280;
-
-            Label lblEmail = new Label();
-            lblEmail.Text = "Correo electrónico:";
-            lblEmail.Left = 610;
-            lblEmail.Top = 385;
-            lblEmail.Width = 250;
-
-            TextBox txtEmail = new TextBox();
-            txtEmail.Left = 610;
-            txtEmail.Top = 410;
-            txtEmail.Width = 280;
-
-            Button btnRegistrar = new Button();
-            btnRegistrar.Text = "Registrar médico";
-            btnRegistrar.Left = 610;
-            btnRegistrar.Top = 465;
-            btnRegistrar.Width = 135;
-            btnRegistrar.Height = 40;
-
-            Button btnActualizar = new Button();
-            btnActualizar.Text = "Actualizar médico";
-            btnActualizar.Left = 755;
-            btnActualizar.Top = 465;
-            btnActualizar.Width = 145;
-            btnActualizar.Height = 40;
-            btnActualizar.Enabled = false;
-
-            Button btnLimpiar = new Button();
-            btnLimpiar.Text = "Limpiar campos";
-            btnLimpiar.Left = 610;
-            btnLimpiar.Top = 520;
-            btnLimpiar.Width = 135;
-            btnLimpiar.Height = 35;
-
-            Button btnDesactivar = new Button();
-            btnDesactivar.Text = "Desactivar médico";
-            btnDesactivar.Left = 755;
-            btnDesactivar.Top = 520;
-            btnDesactivar.Width = 145;
-            btnDesactivar.Height = 35;
-            btnDesactivar.Enabled = false;
-
-            this.Controls.Add(lblTitulo);
-            this.Controls.Add(btnConsultar);
-            this.Controls.Add(tablaMedicos);
-            this.Controls.Add(lblNombre);
-            this.Controls.Add(txtNombre);
-            this.Controls.Add(lblPrimerApellido);
-            this.Controls.Add(txtPrimerApellido);
-            this.Controls.Add(lblSegundoApellido);
-            this.Controls.Add(txtSegundoApellido);
-            this.Controls.Add(lblEspecialidad);
-            this.Controls.Add(cmbEspecialidad);
-            this.Controls.Add(lblTelefono);
-            this.Controls.Add(txtTelefono);
-            this.Controls.Add(lblEmail);
-            this.Controls.Add(txtEmail);
-            this.Controls.Add(btnRegistrar);
-            this.Controls.Add(btnActualizar);
-            this.Controls.Add(btnLimpiar);
-            this.Controls.Add(btnDesactivar);
-
-            int idMedicoSeleccionado = 0;
-
-            ServicioMedico servicioMedico = new ServicioMedico();
-            ServicioEspecialidad servicioEspecialidad = new ServicioEspecialidad();
-
-            void CargarEspecialidades()
-            {
-                List<EspecialidadModelo> especialidades = servicioEspecialidad.ObtenerEspecialidades();
-
-                cmbEspecialidad.DataSource = null;
-                cmbEspecialidad.DataSource = especialidades;
-                cmbEspecialidad.DisplayMember = "Nombre";
-                cmbEspecialidad.ValueMember = "IdEspecialidad";
-                cmbEspecialidad.SelectedIndex = -1;
-            }
-
-            void CargarMedicos()
-            {
-                List<MedicoModelo> medicos = servicioMedico.ObtenerMedicos();
-
-                tablaMedicos.DataSource = null;
-                tablaMedicos.DataSource = medicos;
-
-                if (tablaMedicos.Columns["IdMedico"] != null)
-                    tablaMedicos.Columns["IdMedico"].Visible = false;
-
-                if (tablaMedicos.Columns["IdEspecialidad"] != null)
-                    tablaMedicos.Columns["IdEspecialidad"].Visible = false;
-
-                if (tablaMedicos.Columns["Activo"] != null)
-                    tablaMedicos.Columns["Activo"].Visible = false;
-
-                if (tablaMedicos.Columns["Nombre"] != null)
-                    tablaMedicos.Columns["Nombre"].HeaderText = "Nombre";
-
-                if (tablaMedicos.Columns["PrimerApellido"] != null)
-                    tablaMedicos.Columns["PrimerApellido"].HeaderText =
-                        "Primer apellido";
-
-                if (tablaMedicos.Columns["SegundoApellido"] != null)
-                    tablaMedicos.Columns["SegundoApellido"].HeaderText =
-                        "Segundo apellido";
-
-                if (tablaMedicos.Columns["NombreEspecialidad"] != null)
-                    tablaMedicos.Columns["NombreEspecialidad"].HeaderText =
-                        "Especialidad";
-
-                if (tablaMedicos.Columns["Telefono"] != null)
-                    tablaMedicos.Columns["Telefono"].HeaderText = "Teléfono";
-
-                if (tablaMedicos.Columns["Email"] != null)
-                    tablaMedicos.Columns["Email"].HeaderText = "Correo";
-
-                string[] ordenColumnas = { "Nombre", "PrimerApellido", "SegundoApellido", "NombreEspecialidad", "Telefono", "Email" };
-                int posicion = 0;
-
-                foreach (string nombreColumna in ordenColumnas)
-                {
-                    if (tablaMedicos.Columns[nombreColumna] != null)
-                    {
-                        tablaMedicos.Columns[nombreColumna].DisplayIndex = posicion;
-                        posicion++;
-                    }
-                }
-            }
-
-            void LimpiarFormulario()
-            {
-                txtNombre.Clear();
-                txtPrimerApellido.Clear();
-                txtSegundoApellido.Clear();
-                txtTelefono.Clear();
-                txtEmail.Clear();
-
-                cmbEspecialidad.SelectedIndex = -1;
-
-                idMedicoSeleccionado = 0;
-                btnActualizar.Enabled = false;
-                btnDesactivar.Enabled = false;
-
-                tablaMedicos.ClearSelection();
-            }
-
+        private void FrmMedicos_Load(object? sender, EventArgs e)
+        {
             try
             {
                 CargarEspecialidades();
@@ -254,152 +25,212 @@ namespace AgendaMedica.UI
             {
                 MessageBox.Show("No se pudieron cargar las especialidades: " + ex.Message);
             }
+        }
 
-            btnConsultar.Click += (sender, e) =>
+        private void CargarEspecialidades()
+        {
+            List<EspecialidadModelo> especialidades = servicioEspecialidad.ObtenerEspecialidades();
+
+            cmbEspecialidad.DataSource = null;
+            cmbEspecialidad.DataSource = especialidades;
+            cmbEspecialidad.DisplayMember = "Nombre";
+            cmbEspecialidad.ValueMember = "IdEspecialidad";
+            cmbEspecialidad.SelectedIndex = -1;
+        }
+
+        private void CargarMedicos()
+        {
+            List<MedicoModelo> medicos = servicioMedico.ObtenerMedicos();
+
+            dgvMedicos.DataSource = null;
+            dgvMedicos.DataSource = medicos;
+
+            string[] ocultas = { "IdMedico", "IdEspecialidad", "Activo" };
+
+            foreach (string nombre in ocultas)
             {
-                try
-                {
-                    CargarMedicos();
-                    LimpiarFormulario();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("No se pudieron cargar los médicos: " + ex.Message);
-                }
+                if (dgvMedicos.Columns[nombre] != null)
+                    dgvMedicos.Columns[nombre].Visible = false;
+            }
+
+            Dictionary<string, string> encabezados = new Dictionary<string, string>
+            {
+                { "Nombre", "Nombre" },
+                { "PrimerApellido", "Primer apellido" },
+                { "SegundoApellido", "Segundo apellido" },
+                { "NombreEspecialidad", "Especialidad" },
+                { "Telefono", "Teléfono" },
+                { "Email", "Correo" }
             };
 
-            tablaMedicos.CellClick += (sender, e) =>
+            int posicion = 0;
+
+            foreach (KeyValuePair<string, string> par in encabezados)
             {
-                if (e.RowIndex < 0)
-                    return;
+                if (dgvMedicos.Columns[par.Key] != null)
+                {
+                    dgvMedicos.Columns[par.Key].HeaderText = par.Value;
+                    dgvMedicos.Columns[par.Key].DisplayIndex = posicion;
+                    posicion++;
+                }
+            }
+        }
 
-                MedicoModelo medico = tablaMedicos.Rows[e.RowIndex].DataBoundItem as MedicoModelo;
+        private void LimpiarFormulario()
+        {
+            txtNombre.Clear();
+            txtPrimerApellido.Clear();
+            txtSegundoApellido.Clear();
+            txtTelefono.Clear();
+            txtEmail.Clear();
 
-                if (medico == null)
-                    return;
+            cmbEspecialidad.SelectedIndex = -1;
 
-                idMedicoSeleccionado = medico.IdMedico;
+            idMedicoSeleccionado = 0;
+            btnActualizar.Enabled = false;
+            btnDesactivar.Enabled = false;
 
-                txtNombre.Text = medico.Nombre;
-                txtPrimerApellido.Text = medico.PrimerApellido;
-                txtSegundoApellido.Text = medico.SegundoApellido;
-                txtTelefono.Text = medico.Telefono;
-                txtEmail.Text = medico.Email;
+            dgvMedicos.ClearSelection();
+        }
 
-                cmbEspecialidad.SelectedValue = medico.IdEspecialidad;
-
-                btnActualizar.Enabled = true;
-                btnDesactivar.Enabled = true;
+        private MedicoModelo ArmarMedico()
+        {
+            return new MedicoModelo
+            {
+                IdMedico = idMedicoSeleccionado,
+                Nombre = txtNombre.Text.Trim(),
+                PrimerApellido = txtPrimerApellido.Text.Trim(),
+                SegundoApellido = txtSegundoApellido.Text.Trim(),
+                IdEspecialidad = Convert.ToInt32(cmbEspecialidad.SelectedValue),
+                Telefono = txtTelefono.Text.Trim(),
+                Email = txtEmail.Text.Trim()
             };
+        }
 
-            btnRegistrar.Click += (sender, e) =>
+        private void btnConsultar_Click(object? sender, EventArgs e)
+        {
+            try
             {
-                try
-                {
-                    if (cmbEspecialidad.SelectedValue == null)
-                    {
-                        MessageBox.Show("Debe seleccionar una especialidad.");
-                        return;
-                    }
-
-                    MedicoModelo medico = new MedicoModelo
-                    {
-                        Nombre = txtNombre.Text.Trim(),
-                        PrimerApellido = txtPrimerApellido.Text.Trim(),
-                        SegundoApellido = txtSegundoApellido.Text.Trim(),
-                        IdEspecialidad = Convert.ToInt32(cmbEspecialidad.SelectedValue),
-                        Telefono = txtTelefono.Text.Trim(),
-                        Email = txtEmail.Text.Trim()
-                    };
-
-                    servicioMedico.RegistrarMedico(medico);
-
-                    MessageBox.Show("Médico registrado correctamente.");
-
-                    CargarMedicos();
-                    LimpiarFormulario();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("No se pudo registrar el médico: " + ex.Message);
-                }
-            };
-
-            btnActualizar.Click += (sender, e) =>
-            {
-                try
-                {
-                    if (idMedicoSeleccionado <= 0)
-                    {
-                        MessageBox.Show("Primero debe seleccionar un médico.");
-                        return;
-                    }
-
-                    if (cmbEspecialidad.SelectedValue == null)
-                    {
-                        MessageBox.Show("Debe seleccionar una especialidad.");
-                        return;
-                    }
-
-                    MedicoModelo medico = new MedicoModelo
-                    {
-                        IdMedico = idMedicoSeleccionado,
-                        Nombre = txtNombre.Text.Trim(),
-                        PrimerApellido = txtPrimerApellido.Text.Trim(),
-                        SegundoApellido = txtSegundoApellido.Text.Trim(),
-                        IdEspecialidad = Convert.ToInt32(cmbEspecialidad.SelectedValue),
-                        Telefono = txtTelefono.Text.Trim(),
-                        Email = txtEmail.Text.Trim()
-                    };
-
-                    servicioMedico.ActualizarMedico(medico);
-
-                    MessageBox.Show("Médico actualizado correctamente.");
-
-                    CargarMedicos();
-                    LimpiarFormulario();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("No se pudo actualizar el médico: " + ex.Message);
-                }
-            };
-
-            btnLimpiar.Click += (sender, e) =>
-            {
+                CargarMedicos();
                 LimpiarFormulario();
-            };
-
-            btnDesactivar.Click += (sender, e) =>
+            }
+            catch (Exception ex)
             {
-                try
+                MessageBox.Show("No se pudieron cargar los médicos: " + ex.Message);
+            }
+        }
+
+        private void dgvMedicos_CellClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            MedicoModelo? medico = dgvMedicos.Rows[e.RowIndex].DataBoundItem as MedicoModelo;
+
+            if (medico == null)
+                return;
+
+            idMedicoSeleccionado = medico.IdMedico;
+
+            txtNombre.Text = medico.Nombre;
+            txtPrimerApellido.Text = medico.PrimerApellido;
+            txtSegundoApellido.Text = medico.SegundoApellido;
+            txtTelefono.Text = medico.Telefono;
+            txtEmail.Text = medico.Email;
+
+            cmbEspecialidad.SelectedValue = medico.IdEspecialidad;
+
+            btnActualizar.Enabled = true;
+            btnDesactivar.Enabled = true;
+        }
+
+        private void btnRegistrar_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbEspecialidad.SelectedValue == null)
                 {
-                    if (idMedicoSeleccionado <= 0)
-                    {
-                        MessageBox.Show("Primero debe seleccionar un médico de la tabla.");
-                        return;
-                    }
-
-                    DialogResult respuesta = MessageBox.Show(
-                        "¿Desea desactivar a este médico? Dejará de aparecer en la lista, pero su información se conserva.",
-                        "Confirmar desactivación",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question);
-
-                    if (respuesta != DialogResult.Yes)
-                        return;
-
-                    servicioMedico.DesactivarMedico(idMedicoSeleccionado);
-                    MessageBox.Show("Médico desactivado correctamente.");
-
-                    CargarMedicos();
-                    LimpiarFormulario();
+                    MessageBox.Show("Debe seleccionar una especialidad.");
+                    return;
                 }
-                catch (Exception ex)
+
+                MedicoModelo medico = ArmarMedico();
+                medico.IdMedico = 0;
+
+                servicioMedico.RegistrarMedico(medico);
+                MessageBox.Show("Médico registrado correctamente.");
+
+                CargarMedicos();
+                LimpiarFormulario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo registrar el médico: " + ex.Message);
+            }
+        }
+
+        private void btnActualizar_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (idMedicoSeleccionado <= 0)
                 {
-                    MessageBox.Show("No se pudo desactivar el médico: " + ex.Message);
+                    MessageBox.Show("Primero debe seleccionar un médico.");
+                    return;
                 }
-            };
+
+                if (cmbEspecialidad.SelectedValue == null)
+                {
+                    MessageBox.Show("Debe seleccionar una especialidad.");
+                    return;
+                }
+
+                servicioMedico.ActualizarMedico(ArmarMedico());
+                MessageBox.Show("Médico actualizado correctamente.");
+
+                CargarMedicos();
+                LimpiarFormulario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo actualizar el médico: " + ex.Message);
+            }
+        }
+
+        private void btnDesactivar_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (idMedicoSeleccionado <= 0)
+                {
+                    MessageBox.Show("Primero debe seleccionar un médico de la tabla.");
+                    return;
+                }
+
+                DialogResult respuesta = MessageBox.Show(
+                    "¿Desea desactivar a este médico? Dejará de aparecer en la lista, pero su información se conserva.",
+                    "Confirmar desactivación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (respuesta != DialogResult.Yes)
+                    return;
+
+                servicioMedico.DesactivarMedico(idMedicoSeleccionado);
+                MessageBox.Show("Médico desactivado correctamente.");
+
+                CargarMedicos();
+                LimpiarFormulario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo desactivar el médico: " + ex.Message);
+            }
+        }
+
+        private void btnLimpiar_Click(object? sender, EventArgs e)
+        {
+            LimpiarFormulario();
         }
     }
 }
