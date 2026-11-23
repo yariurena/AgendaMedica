@@ -87,3 +87,13 @@ La capa de presentación solo se comunica con la lógica de negocio, y esta con 
 ## Tecnologías
 
 C#, .NET 10, Windows Forms, MySQL y MySqlConnector. Control de versiones con Git.
+
+## Documentación
+
+La carpeta `Documentacion` incluye:
+
+- Manual técnico
+- Manual de usuario
+- Pruebas funcionales con evidencias
+- Declaración de uso de inteligencia artificial
+- Diagramas entidad-relación y de arquitectura
