@@ -131,7 +131,7 @@ INSERT IGNORE INTO Estado_de_Cita (Nombre) VALUES
     ('Confirmada'),
     ('Atendida'),
     ('Cancelada'),
-    ('No asistio'),
+    ('No asistió'),
     ('Reprogramada');
 
 INSERT IGNORE INTO Tipo_de_cita (Nombre) VALUES
